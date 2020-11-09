@@ -178,7 +178,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
       );
     }
 
-    widgets.add(SizedBox(height: 88.0));
+    widgets.add(SizedBox(height: 80.0));
 
     return widgets;
   }
@@ -258,14 +258,14 @@ class _MerchantCartState extends State<MerchantCart> {
   Widget build(BuildContext context) {
     return AnimatedPositioned(
       duration: Duration(milliseconds: 300),
-      bottom: widget.totalItems > 0 ? 0 : -70,
+      bottom: widget.totalItems > 0.0 ? 0.0 : -70.0,
       right: 0,
       width: MediaQuery.of(context).size.width,
       child: AnimatedOpacity(
-        opacity: widget.totalItems > 0 ? 1 : 0,
+        opacity: widget.totalItems > 0.0 ? 1.0 : 0.0,
         duration: Duration(milliseconds: 300),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16.0),
           child: FlatButton(
             onPressed: () {
               Navigator.push(
@@ -275,7 +275,7 @@ class _MerchantCartState extends State<MerchantCart> {
             },
             color: Colors.green,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
                   Text(
@@ -285,8 +285,8 @@ class _MerchantCartState extends State<MerchantCart> {
                   ),
                   Expanded(
                     child: Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      padding: const EdgeInsets.only(left: 8),
+                      margin: const EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.only(left: 8.0),
                       decoration: BoxDecoration(
                         border: Border(
                           left: BorderSide(

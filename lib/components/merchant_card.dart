@@ -59,6 +59,7 @@ class MerchantCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
                           style: TextStyle(
+                            fontSize: 16.0,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

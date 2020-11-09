@@ -1,6 +1,6 @@
 import 'package:apate/components/cart_item_card.dart';
-import 'package:apate/db_helper.dart';
 import 'package:apate/data/models/cart_item.dart';
+import 'package:apate/db_helper.dart';
 import 'package:apate/utils/number.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -187,15 +187,18 @@ class CheckoutOrderButton extends StatelessWidget {
           child: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16.0),
               child: FlatButton(
                 onPressed: () => _sendOrderMessage(context),
                 color: Colors.green,
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(12.0),
                   child: Text(
                     "PESAN",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
                   ),
                 ),
               ),

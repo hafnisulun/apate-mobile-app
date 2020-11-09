@@ -20,15 +20,15 @@ class AccountScreen extends StatelessWidget {
             children: [
               Item(
                 field: "Nama",
-                value: "Hafni Syaeful Sulun",
+                value: "Mustafa Abdurrahman",
               ),
               Item(
                 field: "Email",
-                value: "hafni.sulun@gmail.com",
+                value: "mustafa27@gmail.com",
               ),
               Item(
                 field: "No. telp.",
-                value: "+62 856-2489-0099",
+                value: "+62 812-1234-5678",
               ),
               Item(
                 field: "Jenis kelamin",
@@ -37,7 +37,7 @@ class AccountScreen extends StatelessWidget {
               Item(
                 field: "Alamat",
                 value:
-                    "STR\nSentra Timur Residence\nTower Orange\nUnit O1520C\nPulo Gebang, Cakung\nJakarta Timur, 13950",
+                    "STR\nSentra Timur Residence\nTower Biru\nUnit B3030A\nPulo Gebang, Cakung\nJakarta Timur, 13950",
               ),
               Container(
                 width: double.infinity,
@@ -52,7 +52,15 @@ class AccountScreen extends StatelessWidget {
                       (_) => false,
                     );
                   },
-                  child: Text("KELUAR"),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text(
+                      "KELUAR",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
                   borderSide: BorderSide(color: Colors.red),
                   highlightedBorderColor: Colors.red,
                   textColor: Colors.red,

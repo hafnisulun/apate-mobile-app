@@ -198,7 +198,7 @@ class ActionButtons extends StatelessWidget {
           ),
           child: Text(
             cartItem.productQty.toString(),
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
