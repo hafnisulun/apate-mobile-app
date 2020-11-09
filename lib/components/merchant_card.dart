@@ -1,6 +1,7 @@
 import 'package:apate/data/models/merchant.dart';
 import 'package:apate/screens/merchant_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class MerchantCard extends StatelessWidget {
   final double width;
@@ -15,10 +16,9 @@ class MerchantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
+        pushNewScreen(
           context,
-          MaterialPageRoute(
-              builder: (context) => MerchantScreen(merchant: merchant)),
+          screen: MerchantScreen(merchant: merchant),
         );
       },
       child: SizedBox(
