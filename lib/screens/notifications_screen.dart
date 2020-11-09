@@ -8,7 +8,9 @@ class NotificationsScreen extends StatelessWidget {
         title: Text("Notifikasi"),
         automaticallyImplyLeading: true,
       ),
-      body: Text("Notifikasi"),
+      body: Center(
+        child: Text("Tidak ada notifikasi"),
+      ),
     );
   }
 }
