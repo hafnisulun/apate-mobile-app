@@ -280,7 +280,10 @@ class _MerchantCartState extends State<MerchantCart> {
                 children: [
                   Text(
                     "${Number.formatNumber(widget.totalItems)} item",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
                     textAlign: TextAlign.start,
                   ),
                   Expanded(
@@ -296,7 +299,10 @@ class _MerchantCartState extends State<MerchantCart> {
                       ),
                       child: Text(
                         "${Number.formatCurrency(widget.totalAmount)}",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.0,
+                        ),
                         textAlign: TextAlign.start,
                       ),
                     ),
