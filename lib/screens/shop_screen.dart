@@ -36,16 +36,7 @@ class MerchantGridView extends StatelessWidget {
     final merchantsCubit = context.bloc<MerchantsCubit>();
     merchantsCubit.getMerchants();
     return Container(
-      child: BlocConsumer<MerchantsCubit, MerchantsState>(
-        listener: (context, state) {
-          if (state is MerchantsFetchError) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-              ),
-            );
-          }
-        },
+      child: BlocBuilder<MerchantsCubit, MerchantsState>(
         builder: (context, state) {
           if (state is MerchantsFetchSuccess) {
             return GridView.count(
@@ -60,6 +51,26 @@ class MerchantGridView extends StatelessWidget {
                     (index) =>
                         MerchantCard(merchant: state.merchants.data[index]))
               ],
+            );
+          } else if (state is MerchantsFetchError) {
+            return Center(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Koneksi internet terputus"),
+                    SizedBox(height: 8.0),
+                    FlatButton(
+                      onPressed: () => merchantsCubit.getMerchants(),
+                      color: Colors.green,
+                      child: Text(
+                        "COBA LAGI",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                ),
+              ),
             );
           } else {
             return Center(
