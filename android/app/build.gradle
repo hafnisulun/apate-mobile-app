@@ -35,11 +35,12 @@ if (project.hasProperty('dart-defines')) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -52,7 +53,7 @@ android {
     defaultConfig {
         applicationId "id.apate.app"
         applicationIdSuffix dartEnvironmentVariables.APP_SUFFIX
-        minSdkVersion 16
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -73,8 +74,5 @@ flutter {
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:26.1.1')
-
-    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

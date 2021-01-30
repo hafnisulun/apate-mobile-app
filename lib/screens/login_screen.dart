@@ -1,6 +1,8 @@
 import 'package:apate/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -33,13 +35,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget _buildLoginButton(BuildContext context) {
     return FlatButton(
-      onPressed: () {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-          (_) => false,
-        );
-      },
+      onPressed: () => signInWithGoogle(context),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
@@ -57,13 +53,36 @@ class LoginScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 12),
               child: Text(
-                'Masuk dengan Google',
+                "Masuk dengan Google",
                 style: TextStyle(fontSize: 16, color: Colors.green),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  void signInWithGoogle(BuildContext context) async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    User _user = userCredential.user;
+    assert(!_user.isAnonymous);
+    assert(await _user.getIdToken() != null);
+    assert(_user.uid == FirebaseAuth.instance.currentUser.uid);
+    print("User Name: ${_user.displayName}");
+    print("User Email: ${_user.email}");
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+      (_) => false,
     );
   }
 }

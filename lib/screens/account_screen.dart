@@ -1,5 +1,7 @@
 import 'package:apate/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountScreen extends StatelessWidget {
   @override
@@ -20,15 +22,15 @@ class AccountScreen extends StatelessWidget {
             children: [
               Item(
                 field: "Nama",
-                value: "Mustafa Abdurrahman",
+                value: FirebaseAuth.instance.currentUser.displayName ?? "-",
               ),
               Item(
                 field: "Email",
-                value: "mustafa27@gmail.com",
+                value: FirebaseAuth.instance.currentUser.email ?? "-",
               ),
               Item(
                 field: "No. telp.",
-                value: "+62 812-1234-5678",
+                value: FirebaseAuth.instance.currentUser.phoneNumber ?? "-",
               ),
               Item(
                 field: "Jenis kelamin",
@@ -43,15 +45,7 @@ class AccountScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 24.0),
                 child: OutlineButton(
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => LoginScreen(),
-                      ),
-                      (_) => false,
-                    );
-                  },
+                  onPressed: () => signOutGoogle(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
@@ -70,6 +64,17 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void signOutGoogle(BuildContext context) async {
+    GoogleSignInAccount googleUser = await GoogleSignIn().signOut();
+    print("googleUser: " + googleUser.toString());
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (BuildContext context) => LoginScreen(),
+      ),
+      (_) => false,
     );
   }
 }
