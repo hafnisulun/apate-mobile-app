@@ -73,12 +73,13 @@ class LoginScreen extends StatelessWidget {
     );
     UserCredential userCredential =
         await FirebaseAuth.instance.signInWithCredential(credential);
-    User _user = userCredential.user;
-    assert(!_user.isAnonymous);
-    assert(await _user.getIdToken() != null);
-    assert(_user.uid == FirebaseAuth.instance.currentUser.uid);
-    print("User Name: ${_user.displayName}");
-    print("User Email: ${_user.email}");
+    User user = userCredential.user;
+    String idToken = await user.getIdToken();
+    assert(!user.isAnonymous);
+    assert(idToken != null);
+    assert(user.uid == FirebaseAuth.instance.currentUser.uid);
+    print("User Name: ${user.displayName}");
+    print("User Email: ${user.email}");
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
