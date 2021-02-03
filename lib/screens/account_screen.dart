@@ -1,7 +1,6 @@
 import 'package:apate/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountScreen extends StatelessWidget {
   @override
@@ -68,8 +67,9 @@ class AccountScreen extends StatelessWidget {
   }
 
   void signOutGoogle(BuildContext context) async {
-    GoogleSignInAccount googleUser = await GoogleSignIn().signOut();
-    print("googleUser: " + googleUser.toString());
+    await FirebaseAuth.instance.signOut();
+    print(
+        "[AccountScreen] [signOutGoogle] currentUser: ${FirebaseAuth.instance.currentUser}");
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),

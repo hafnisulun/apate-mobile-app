@@ -1,4 +1,6 @@
+import 'package:apate/screens/home_screen.dart';
 import 'package:apate/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print("[MyApp] [build] currentUser: ${FirebaseAuth.instance.currentUser}");
     return MaterialApp(
       title: 'Apate',
       theme: ThemeData(
@@ -18,7 +21,9 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginScreen(),
+      home: FirebaseAuth.instance.currentUser != null
+          ? HomeScreen()
+          : LoginScreen(),
     );
   }
 }
