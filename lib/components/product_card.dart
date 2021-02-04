@@ -35,9 +35,7 @@ class ProductCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.asset(
-            product.image != null
-                ? product.image
-                : "assets/images/no_image.png",
+            product.image ?? "assets/images/no_image.png",
             height: 64,
           ),
           SizedBox(
@@ -74,7 +72,7 @@ class ProductCard extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  product.description != null ? product.description : "",
+                  product.description ?? "",
                   style: TextStyle(
                     color: Colors.grey,
                   ),

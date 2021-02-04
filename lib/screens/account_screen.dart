@@ -21,15 +21,24 @@ class AccountScreen extends StatelessWidget {
             children: [
               Item(
                 field: "Nama",
-                value: FirebaseAuth.instance.currentUser.displayName ?? "-",
+                value: FirebaseAuth.instance.currentUser.displayName != null &&
+                        FirebaseAuth.instance.currentUser.displayName.isNotEmpty
+                    ? FirebaseAuth.instance.currentUser.displayName
+                    : "-",
               ),
               Item(
                 field: "Email",
-                value: FirebaseAuth.instance.currentUser.email ?? "-",
+                value: FirebaseAuth.instance.currentUser.email != null &&
+                        FirebaseAuth.instance.currentUser.email.isNotEmpty
+                    ? FirebaseAuth.instance.currentUser.email
+                    : "-",
               ),
               Item(
                 field: "No. telp.",
-                value: FirebaseAuth.instance.currentUser.phoneNumber ?? "-",
+                value: FirebaseAuth.instance.currentUser.phoneNumber != null &&
+                        FirebaseAuth.instance.currentUser.phoneNumber.isNotEmpty
+                    ? FirebaseAuth.instance.currentUser.phoneNumber
+                    : "-",
               ),
               Item(
                 field: "Jenis kelamin",
