@@ -1,3 +1,4 @@
+import 'package:apate/env.dart';
 import 'package:apate/screens/home_screen.dart';
 import 'package:apate/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     print("[MyApp] [build] currentUser: ${FirebaseAuth.instance.currentUser}");
     return MaterialApp(
-      title: 'Apate',
+      title: Env.APP_NAME,
       theme: ThemeData(
         primarySwatch: Colors.green,
         scaffoldBackgroundColor: Colors.white,
