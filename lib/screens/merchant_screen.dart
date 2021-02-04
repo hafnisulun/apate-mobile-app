@@ -96,45 +96,44 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
     _loadCart();
     final productsCubit = context.bloc<ProductsCubit>();
     productsCubit.getProducts(widget.merchant.id);
-    return Container(
-      child: BlocConsumer<ProductsCubit, ProductsState>(
-        listener: (context, state) {
-          if (state is ProductsFetchError) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is ProductsFetchSuccess) {
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: 192,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: Text(widget.merchant.name),
-                    background: FadeInImage.assetNetwork(
-                      placeholder: "assets/images/no_image.png",
-                      image: widget.merchant.image,
-                      fit: BoxFit.cover,
-                    ),
+
+    return BlocConsumer<ProductsCubit, ProductsState>(
+      listener: (context, state) {
+        if (state is ProductsFetchError) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is ProductsFetchSuccess) {
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 192,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(widget.merchant.name),
+                  background: FadeInImage.assetNetwork(
+                    placeholder: "assets/images/no_image.png",
+                    image: widget.merchant.image,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                SliverList(
-                  delegate: SliverChildListDelegate(_buildList(state.products)),
-                ),
-              ],
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
-      ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(_buildList(state.products)),
+              ),
+            ],
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
