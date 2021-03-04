@@ -1,32 +1,26 @@
 import 'package:apate/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-      ),
-      child: Scaffold(
-        body: Container(
-          color: Colors.green,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image(
-                  image: AssetImage("assets/images/apate_a_white_logo.png"),
-                  height: 192,
-                ),
-                SizedBox(height: 128),
-                _buildLoginButton(context),
-              ],
-            ),
+    return Scaffold(
+      body: Container(
+        color: Colors.green,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(
+                image: AssetImage("assets/images/apate_a_white_logo.png"),
+                height: 192,
+              ),
+              SizedBox(height: 128),
+              _buildLoginButton(context),
+            ],
           ),
         ),
       ),
