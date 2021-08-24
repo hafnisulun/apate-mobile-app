@@ -1,4 +1,4 @@
-part of 'cart_item_cubit.dart';
+part of 'cart_item_bloc.dart';
 
 abstract class CartItemState extends Equatable {
   const CartItemState();

@@ -1,4 +1,4 @@
-part of 'merchants_cubit.dart';
+part of 'merchants_bloc.dart';
 
 abstract class MerchantsState extends Equatable {
   const MerchantsState();

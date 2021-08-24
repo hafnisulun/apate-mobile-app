@@ -1,4 +1,4 @@
-import 'package:apate/cubits/cart_item_cubit.dart';
+import 'package:apate/bloc/cart_item_bloc.dart';
 import 'package:apate/data/models/cart_item.dart';
 import 'package:apate/data/models/product.dart';
 import 'package:apate/data/repositories/cart_repository.dart';
@@ -83,7 +83,8 @@ class ProductCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: BlocProvider(
-                    create: (context) => CartItemCubit(CartRepository()),
+                    create: (context) => CartItemBloc(CartRepository())
+                      ..add(GetCartItemEvent(product.id)),
                     child: ActionButtons(
                       merchantId: merchantId,
                       product: product,
@@ -113,11 +114,7 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CartItemCubit cartItemCubit = context.bloc<CartItemCubit>();
-    cartItemCubit.getCartItem(product.id);
-
-    return BlocConsumer<CartItemCubit, CartItemState>(
-      cubit: cartItemCubit,
+    return BlocConsumer<CartItemBloc, CartItemState>(
       listenWhen: (previous, current) {
         return current is CartItemFetchError;
       },
@@ -134,9 +131,12 @@ class ActionButtons extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        print("[ActionButtons] [build] state: " + state.toString());
         if (state is CartItemFetchSuccess) {
+          print("[ActionButtons] [build] state.item: " + state.item.toString());
           if (state.item != null && state.item.productQty > 0) {
-            return _buildRemoveAndAddButtons(state.item, cartItemCubit);
+            return _buildRemoveAndAddButtons(
+                state.item, context.watch<CartItemBloc>());
           } else {
             final CartItem cartItem = CartItem(
               merchantId: merchantId,
@@ -145,7 +145,7 @@ class ActionButtons extends StatelessWidget {
               productPrice: product.price,
               productQty: 0,
             );
-            return _buildAddButton(cartItem, cartItemCubit);
+            return _buildAddButton(cartItem, context.watch<CartItemBloc>());
           }
         }
         return Container();
@@ -153,7 +153,7 @@ class ActionButtons extends StatelessWidget {
     );
   }
 
-  Widget _buildAddButton(CartItem cartItem, CartItemCubit cartItemCubit) {
+  Widget _buildAddButton(CartItem cartItem, CartItemBloc cartItemCubit) {
     return FlatButton(
       onPressed: () {
         cartItem.productQty++;
@@ -169,7 +169,7 @@ class ActionButtons extends StatelessWidget {
 
   Widget _buildRemoveAndAddButtons(
     CartItem cartItem,
-    CartItemCubit cartItemCubit,
+    CartItemBloc cartItemCubit,
   ) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,

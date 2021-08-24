@@ -1,6 +1,6 @@
+import 'package:apate/bloc/cart_item_bloc.dart';
+import 'package:apate/bloc/products_bloc.dart';
 import 'package:apate/components/product_card.dart';
-import 'package:apate/cubits/cart_item_cubit.dart';
-import 'package:apate/cubits/products_cubit.dart';
 import 'package:apate/data/models/cart_item.dart';
 import 'package:apate/data/models/merchant.dart';
 import 'package:apate/data/models/product.dart';
@@ -54,8 +54,9 @@ class _MerchantBodyState extends State<MerchantBody> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        BlocProvider<ProductsCubit>(
-          create: (context) => ProductsCubit(ProductsRepository()),
+        BlocProvider(
+          create: (context) => ProductsBloc(ProductsRepository())
+            ..add(GetProductsEvent(widget.merchant.id)),
           child: MerchantScrollView(
             merchant: widget.merchant,
             updateCartCallback: _notifier.updateCart,
@@ -67,7 +68,7 @@ class _MerchantBodyState extends State<MerchantBody> {
             totalItems: _notifier.totalItems,
             totalAmount: _notifier.totalAmount,
             updateCartCallback: _notifier.updateCart,
-          ),
+              ),
         ),
       ],
     );
@@ -94,10 +95,8 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
   @override
   Widget build(BuildContext context) {
     _loadCart();
-    final productsCubit = context.bloc<ProductsCubit>();
-    productsCubit.getProducts(widget.merchant.id);
 
-    return BlocConsumer<ProductsCubit, ProductsState>(
+    return BlocConsumer<ProductsBloc, ProductsState>(
       listener: (context, state) {
         if (state is ProductsFetchError) {
           Scaffold.of(context).showSnackBar(
@@ -182,7 +181,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
     return widgets;
   }
 
-  void _updateCartItem(CartItem item, CartItemCubit cartItemCubit) async {
+  void _updateCartItem(CartItem item, CartItemBloc cartItemCubit) async {
     const int MAX_ITEM_QTY = 999;
     Future<List<CartItem>> cartFuture = _dbHelper.getCart();
     cartFuture.then((cart) async {
@@ -210,7 +209,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
         result = await _dbHelper.insert(item);
       }
       if (result > 0) {
-        cartItemCubit.getCartItem(item.productId);
+        cartItemCubit.add(GetCartItemEvent(item.productId));
         widget.updateCartCallback();
       }
     });

@@ -1,4 +1,4 @@
-part of 'products_cubit.dart';
+part of 'products_bloc.dart';
 
 abstract class ProductsState extends Equatable {
   const ProductsState();

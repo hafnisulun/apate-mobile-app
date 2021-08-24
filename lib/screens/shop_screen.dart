@@ -1,5 +1,5 @@
+import 'package:apate/bloc/merchants_bloc.dart';
 import 'package:apate/components/merchant_card.dart';
-import 'package:apate/cubits/merchants_cubit.dart';
 import 'package:apate/data/repositories/merchants_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +23,8 @@ class _ShopScreenState extends State<ShopScreen> {
         automaticallyImplyLeading: true,
       ),
       body: BlocProvider(
-        create: (context) => MerchantsCubit(MerchantsRepository()),
+        create: (context) =>
+            MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
         child: MerchantGridView(),
       ),
     );
@@ -33,10 +34,7 @@ class _ShopScreenState extends State<ShopScreen> {
 class MerchantGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final merchantsCubit = context.bloc<MerchantsCubit>();
-    merchantsCubit.getMerchants();
-
-    return BlocBuilder<MerchantsCubit, MerchantsState>(
+    return BlocBuilder<MerchantsBloc, MerchantsState>(
       builder: (context, state) {
         if (state is MerchantsFetchSuccess) {
           return GridView.count(
@@ -48,7 +46,7 @@ class MerchantGridView extends StatelessWidget {
             children: [
               ...List.generate(
                   state.merchants.data.length,
-                  (index) =>
+                      (index) =>
                       MerchantCard(merchant: state.merchants.data[index]))
             ],
           );
@@ -61,7 +59,8 @@ class MerchantGridView extends StatelessWidget {
                   Text("Koneksi internet terputus"),
                   SizedBox(height: 8.0),
                   FlatButton(
-                    onPressed: () => merchantsCubit.getMerchants(),
+                    onPressed: () =>
+                        context.read<MerchantsBloc>().add(LoadMerchantsEvent()),
                     color: Colors.green,
                     child: Text(
                       "COBA LAGI",
