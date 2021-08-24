@@ -48,7 +48,7 @@ class MerchantCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    height: 48,
+                    height: 54,
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Align(

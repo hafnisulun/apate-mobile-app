@@ -226,11 +226,133 @@ class MerchantInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: Row(
+      child: Column(
         children: [
-          Icon(Icons.location_on_outlined),
-          SizedBox(width: 4.0),
-          Text(merchant.address),
+          Row(
+            children: [
+              Icon(Icons.location_on_outlined),
+              SizedBox(width: 8.0),
+              Text(merchant.address),
+            ],
+          ),
+          SizedBox(height: 12.0),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.watch_later_outlined),
+              SizedBox(width: 8.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Sunday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Monday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Wednesday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Thursday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Wednesday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Friday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("Closed"),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 100.0,
+                          child: Text(
+                            "Saturday",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text("09:00 - 17:00"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
       ),
     );
