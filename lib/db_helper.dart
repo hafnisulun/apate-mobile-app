@@ -7,8 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DbHelper {
-  static DbHelper _dbHelper;
-  static Database _database;
+  static DbHelper? _dbHelper;
+  static Database? _database;
 
   DbHelper._createObject();
 
@@ -16,15 +16,15 @@ class DbHelper {
     if (_dbHelper == null) {
       _dbHelper = DbHelper._createObject();
     }
-    return _dbHelper;
+    return _dbHelper!;
   }
 
   Future<Database> initDb() async {
     String dbName = "apate.db";
     String path;
     if (Platform.isAndroid && !kReleaseMode) {
-      Directory extDir = await getExternalStorageDirectory();
-      path = join(extDir.path, "databases", dbName);
+      Directory? extDir = await getExternalStorageDirectory();
+      path = join(extDir!.path, "databases", dbName);
     } else {
       String dbDir = await getDatabasesPath();
       path = join(dbDir, dbName);
@@ -50,7 +50,7 @@ class DbHelper {
     ''');
   }
 
-  Future<Database> get database async {
+  Future<Database?> get database async {
     if (_database == null) {
       _database = await initDb();
     }
@@ -58,19 +58,19 @@ class DbHelper {
   }
 
   Future<List<CartItem>> getCart() async {
-    Database db = await this.database;
-    var cartMapList = await db.query('cart');
+    Database? db = await this.database;
+    var cartMapList = await db!.query('cart');
     int count = cartMapList.length;
-    List<CartItem> cart = List<CartItem>();
+    List<CartItem> cart = List.empty(growable: true);
     for (int i = 0; i < count; i++) {
       cart.add(CartItem.fromMap(cartMapList[i]));
     }
     return cart;
   }
 
-  Future<CartItem> getCartItem(String productId) async {
-    Database db = await this.database;
-    var cartMapList = await db.query(
+  Future<CartItem?> getCartItem(String productId) async {
+    Database? db = await this.database;
+    var cartMapList = await db!.query(
       'cart',
       where: 'product_id=?',
       whereArgs: [productId],
@@ -83,13 +83,13 @@ class DbHelper {
   }
 
   Future<int> insert(CartItem item) async {
-    Database db = await this.database;
-    return await db.insert('cart', item.toMap());
+    Database? db = await this.database;
+    return await db!.insert('cart', item.toMap());
   }
 
   Future<int> update(CartItem item) async {
-    Database db = await this.database;
-    return await db.update(
+    Database? db = await this.database;
+    return await db!.update(
       'cart',
       item.toMap(),
       where: 'id=?',
@@ -98,8 +98,8 @@ class DbHelper {
   }
 
   Future<int> delete(CartItem item) async {
-    Database db = await this.database;
-    return await db.delete(
+    Database? db = await this.database;
+    return await db!.delete(
       'cart',
       where: 'id=?',
       whereArgs: [item.id],
@@ -107,7 +107,7 @@ class DbHelper {
   }
 
   Future<int> clear() async {
-    Database db = await this.database;
-    return await db.delete('cart');
+    Database? db = await this.database;
+    return await db!.delete('cart');
   }
 }

@@ -6,7 +6,7 @@ class CartItemCard extends StatelessWidget {
   final CartItem cartItem;
 
   CartItemCard({
-    @required this.cartItem,
+    required this.cartItem,
   });
 
   @override
@@ -16,7 +16,7 @@ class CartItemCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey[300],
+            color: Colors.grey[300]!,
           ),
         ),
       ),

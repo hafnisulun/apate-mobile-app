@@ -6,7 +6,7 @@ class CartRepository {
   Dio dio = Dio();
   final DbHelper _dbHelper = new DbHelper();
 
-  Future<CartItem> getCartItem(String productId) async {
+  Future<CartItem?> getCartItem(String productId) async {
     return _dbHelper.getCartItem(productId);
   }
 }

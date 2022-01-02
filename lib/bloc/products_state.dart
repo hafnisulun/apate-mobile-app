@@ -12,7 +12,7 @@ class ProductsFetchLoading extends ProductsState {
 class ProductsFetchSuccess extends ProductsState {
   final Products products;
 
-  const ProductsFetchSuccess({this.products});
+  const ProductsFetchSuccess({required this.products});
 
   @override
   List<Object> get props => [products];
@@ -21,7 +21,7 @@ class ProductsFetchSuccess extends ProductsState {
 class ProductsFetchError extends ProductsState {
   final String message;
 
-  const ProductsFetchError({this.message});
+  const ProductsFetchError({required this.message});
 
   @override
   List<Object> get props => [message];

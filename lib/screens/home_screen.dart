@@ -10,8 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  PersistentTabController _controller;
-  bool _hideNavBar;
+  late PersistentTabController _controller;
+  late bool _hideNavBar;
 
   @override
   void initState() {
@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
+      context,
       controller: _controller,
       screens: _buildScreens(),
       items: _buildNavBarItems(),
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: NavBarDecoration(
         border: Border(
             top: BorderSide(
-          color: Colors.grey[300],
+              color: Colors.grey[300]!,
         )),
       ),
       popAllScreensOnTapOfSelectedTab: true,
@@ -58,20 +59,20 @@ class _HomeScreenState extends State<HomeScreen> {
       PersistentBottomNavBarItem(
         icon: Icon(Icons.shopping_basket),
         title: "Belanja",
-        activeColor: Colors.green,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.green,
+        inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.notifications),
         title: ("Notifikasi"),
-        activeColor: Colors.green,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.green,
+        inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.person),
         title: ("Akun"),
-        activeColor: Colors.green,
-        inactiveColor: Colors.grey,
+        activeColorPrimary: Colors.green,
+        inactiveColorPrimary: Colors.grey,
       ),
     ];
   }

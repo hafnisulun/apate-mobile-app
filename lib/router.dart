@@ -17,9 +17,9 @@ class Router {
       case loginRoute:
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case shopRoute:
-        return MaterialPageRoute(builder: (_) => ShopScreen());
-      case merchantRoute:
-        return MaterialPageRoute(builder: (_) => MerchantScreen());
+        return MaterialPageRoute(
+            builder: (_) => ShopScreen()); // case merchantRoute:
+      //   return MaterialPageRoute(builder: (_) => MerchantScreen());
       case checkoutRoute:
         return MaterialPageRoute(builder: (_) => CheckoutScreen());
       case notificationsRoute:

@@ -12,7 +12,7 @@ class MerchantsFetchLoading extends MerchantsState {
 class MerchantsFetchSuccess extends MerchantsState {
   final Merchants merchants;
 
-  const MerchantsFetchSuccess({this.merchants});
+  const MerchantsFetchSuccess({required this.merchants});
 
   @override
   List<Object> get props => [merchants];
@@ -21,7 +21,7 @@ class MerchantsFetchSuccess extends MerchantsState {
 class MerchantsFetchError extends MerchantsState {
   final String message;
 
-  const MerchantsFetchError({this.message});
+  const MerchantsFetchError({required this.message});
 
   @override
   List<Object> get props => [message];

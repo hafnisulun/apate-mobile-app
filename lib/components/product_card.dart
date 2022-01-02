@@ -14,10 +14,10 @@ class ProductCard extends StatelessWidget {
   final Function onCartItemUpdated;
 
   const ProductCard({
-    @required this.merchantId,
-    @required this.product,
-    @required this.qty,
-    @required this.onCartItemUpdated,
+    required this.merchantId,
+    required this.product,
+    required this.qty,
+    required this.onCartItemUpdated,
   });
 
   @override
@@ -27,7 +27,7 @@ class ProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey[300],
+            color: Colors.grey[300]!,
           ),
         ),
       ),
@@ -107,9 +107,9 @@ class ActionButtons extends StatelessWidget {
   final Function onCartItemUpdated;
 
   ActionButtons({
-    @required this.merchantId,
-    @required this.product,
-    @required this.onCartItemUpdated,
+    required this.merchantId,
+    required this.product,
+    required this.onCartItemUpdated,
   });
 
   @override
@@ -131,12 +131,10 @@ class ActionButtons extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        print("[ActionButtons] [build] state: " + state.toString());
         if (state is CartItemFetchSuccess) {
-          print("[ActionButtons] [build] state.item: " + state.item.toString());
-          if (state.item != null && state.item.productQty > 0) {
+          if (state.item != null && state.item!.productQty > 0) {
             return _buildRemoveAndAddButtons(
-                state.item, context.watch<CartItemBloc>());
+                state.item!, context.watch<CartItemBloc>());
           } else {
             final CartItem cartItem = CartItem(
               merchantId: merchantId,

@@ -2,23 +2,25 @@ class Merchant {
   String id;
   String name;
   String address;
-  String phone;
-  String image;
+  String? phone;
+  String? image;
 
   Merchant({
-    this.id,
-    this.name,
-    this.address,
+    required this.id,
+    required this.name,
+    required this.address,
     this.phone,
     this.image,
   });
 
-  Merchant.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    address = json['address'];
-    phone = json['phone'];
-    image = json['image'];
+  factory Merchant.fromJson(Map<String, dynamic> json) {
+    return Merchant(
+      id: json['id'],
+      name: json['name'],
+      address: json['address'],
+      phone: json['phone'],
+      image: json['image'],
+    );
   }
 
   Map<String, dynamic> toJson() {

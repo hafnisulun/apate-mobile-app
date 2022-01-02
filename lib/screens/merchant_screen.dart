@@ -17,7 +17,7 @@ class MerchantScreen extends StatelessWidget {
   final Merchant merchant;
 
   MerchantScreen({
-    @required this.merchant,
+    required this.merchant,
   });
 
   @override
@@ -34,7 +34,7 @@ class MerchantBody extends StatefulWidget {
   final Merchant merchant;
 
   MerchantBody({
-    this.merchant,
+    required this.merchant,
   });
 
   @override
@@ -68,7 +68,7 @@ class _MerchantBodyState extends State<MerchantBody> {
             totalItems: _notifier.totalItems,
             totalAmount: _notifier.totalAmount,
             updateCartCallback: _notifier.updateCart,
-              ),
+          ),
         ),
       ],
     );
@@ -80,8 +80,8 @@ class MerchantScrollView extends StatefulWidget {
   final Function updateCartCallback;
 
   MerchantScrollView({
-    @required this.merchant,
-    @required this.updateCartCallback,
+    required this.merchant,
+    required this.updateCartCallback,
   });
 
   @override
@@ -90,7 +90,7 @@ class MerchantScrollView extends StatefulWidget {
 
 class _MerchantScrollViewState extends State<MerchantScrollView> {
   final DbHelper _dbHelper = DbHelper();
-  List<CartItem> _cart = new List();
+  List<CartItem> _cart = new List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +117,8 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
                   title: Text(widget.merchant.name),
                   background: FadeInImage.assetNetwork(
                     placeholder: "assets/images/no_image.png",
-                    image: widget.merchant.image,
+                    image:
+                        widget.merchant.image ?? "assets/images/no_image.png",
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -143,8 +144,8 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
     });
   }
 
-  List _buildList(Products products) {
-    List<Widget> widgets = List();
+  List<Widget> _buildList(Products products) {
+    List<Widget> widgets = List.empty(growable: true);
     int qty = 0;
 
     widgets.add(MerchantInfo(merchant: widget.merchant));
@@ -219,7 +220,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
 class MerchantInfo extends StatelessWidget {
   final Merchant merchant;
 
-  MerchantInfo({this.merchant});
+  MerchantInfo({required this.merchant});
 
   @override
   Widget build(BuildContext context) {
@@ -364,9 +365,9 @@ class MerchantCart extends StatefulWidget {
   final Function updateCartCallback;
 
   MerchantCart({
-    @required this.totalItems,
-    @required this.totalAmount,
-    @required this.updateCartCallback,
+    required this.totalItems,
+    required this.totalAmount,
+    required this.updateCartCallback,
   });
 
   @override

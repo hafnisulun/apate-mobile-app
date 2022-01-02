@@ -10,18 +10,18 @@ class CartItemFetchLoading extends CartItemState {
 }
 
 class CartItemFetchSuccess extends CartItemState {
-  final CartItem item;
+  final CartItem? item;
 
   const CartItemFetchSuccess({this.item});
 
   @override
-  List<Object> get props => [item];
+  List<CartItem?> get props => [item];
 }
 
 class CartItemFetchError extends CartItemState {
   final String message;
 
-  const CartItemFetchError({this.message});
+  const CartItemFetchError({required this.message});
 
   @override
   List<Object> get props => [message];

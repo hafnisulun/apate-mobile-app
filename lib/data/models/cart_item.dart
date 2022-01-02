@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
-
 class CartItem {
-  int id;
+  int? id;
   String merchantId;
   String productId;
   String productName;
@@ -9,20 +7,23 @@ class CartItem {
   int productQty;
 
   CartItem({
-    @required this.merchantId,
-    @required this.productId,
-    @required this.productName,
-    @required this.productPrice,
-    @required this.productQty,
+    this.id,
+    required this.merchantId,
+    required this.productId,
+    required this.productName,
+    required this.productPrice,
+    required this.productQty,
   });
 
-  CartItem.fromMap(Map<String, dynamic> map) {
-    this.id = map['id'];
-    this.merchantId = map['merchant_id'];
-    this.productId = map['product_id'];
-    this.productName = map['product_name'];
-    this.productPrice = map['product_price'];
-    this.productQty = map['product_qty'];
+  factory CartItem.fromMap(Map<String, dynamic> map) {
+    return CartItem(
+      id: map['id'],
+      merchantId: map['merchant_id'],
+      productId: map['product_id'],
+      productName: map['product_name'],
+      productPrice: map['product_price'],
+      productQty: map['product_qty'],
+    );
   }
 
   Map<String, dynamic> toMap() {

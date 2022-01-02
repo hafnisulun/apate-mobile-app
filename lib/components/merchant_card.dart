@@ -9,7 +9,7 @@ class MerchantCard extends StatelessWidget {
 
   const MerchantCard({
     this.width = 160,
-    @required this.merchant,
+    required this.merchant,
   });
 
   @override
@@ -43,7 +43,7 @@ class MerchantCard extends StatelessWidget {
                     ),
                     child: FadeInImage.assetNetwork(
                       placeholder: "assets/images/no_image.png",
-                      image: merchant.image,
+                      image: merchant.image ?? "assets/images/no_image.png",
                       fit: BoxFit.fill,
                     ),
                   ),

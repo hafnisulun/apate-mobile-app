@@ -5,18 +5,18 @@ class Products {
   Meta meta;
 
   Products({
-    this.data,
-    this.meta,
+    required this.data,
+    required this.meta,
   });
 
-  Products.fromJson(Map<String, dynamic> json) {
-    meta = new Meta.fromJson(json['meta']);
+  factory Products.fromJson(Map<String, dynamic> json) {
+    List<Product> data = new List.empty(growable: true);
     if (json['data'] != null) {
-      data = new List<Product>();
       json['data'].forEach((v) {
         data.add(new Product.fromJson(v));
       });
     }
+    return Products(data: data, meta: new Meta.fromJson(json['meta']));
   }
 
   Map<String, dynamic> toJson() {
@@ -36,17 +36,19 @@ class Meta {
   int totalPages;
 
   Meta({
-    this.page,
-    this.limit,
-    this.totalResults,
-    this.totalPages,
+    required this.page,
+    required this.limit,
+    required this.totalResults,
+    required this.totalPages,
   });
 
-  Meta.fromJson(Map<String, dynamic> json) {
-    page = json['page'];
-    limit = json['limit'];
-    totalResults = json['totalResults'];
-    limit = json['limit'];
+  factory Meta.fromJson(Map<String, dynamic> json) {
+    return Meta(
+      page: json['page'],
+      limit: json['limit'],
+      totalResults: json['totalResults'],
+      totalPages: json['totalPages'],
+    );
   }
 
   Map<String, dynamic> toJson() {

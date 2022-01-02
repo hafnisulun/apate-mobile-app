@@ -14,7 +14,7 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   final DbHelper _dbHelper = new DbHelper();
-  List<CartItem> _cart = new List();
+  List<CartItem> _cart = new List.empty(growable: true);
 
   _CheckoutScreenState() {
     _updateCart();
@@ -65,7 +65,7 @@ class CheckoutBody extends StatefulWidget {
   final List<CartItem> cart;
 
   CheckoutBody({
-    @required this.cart,
+    required this.cart,
   });
 
   @override
@@ -97,7 +97,7 @@ class CheckoutCart extends StatefulWidget {
   final List<CartItem> cart;
 
   CheckoutCart({
-    @required this.cart,
+    required this.cart,
   });
 
   @override
@@ -122,7 +122,7 @@ class CheckoutTotal extends StatefulWidget {
   final List<CartItem> cart;
 
   CheckoutTotal({
-    @required this.cart,
+    required this.cart,
   });
 
   @override
@@ -176,7 +176,7 @@ class CheckoutOrderButton extends StatelessWidget {
   final List<CartItem> cart;
 
   CheckoutOrderButton({
-    @required this.cart,
+    required this.cart,
   });
 
   @override
@@ -245,13 +245,20 @@ class CheckoutOrderButton extends StatelessWidget {
     String phone,
     String message,
   ) async {
+    String? encodeQueryParameters(Map<String, String> params) {
+      return params.entries
+          .map((e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+          .join('&');
+    }
+
     Uri uri = Uri(
       scheme: "whatsapp",
       host: "send",
-      queryParameters: {
+      query: encodeQueryParameters(<String, String>{
         "phone": phone,
         "text": message,
-      },
+      }),
     );
     if (await canLaunch(uri.toString())) {
       await launch(uri.toString());

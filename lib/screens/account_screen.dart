@@ -1,5 +1,4 @@
 import 'package:apate/screens/login_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -7,7 +6,7 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Akun"),
+        title: Text('Akun'),
         automaticallyImplyLeading: true,
       ),
       body: Padding(
@@ -20,52 +19,44 @@ class AccountScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Item(
-                field: "Nama",
-                value: FirebaseAuth.instance.currentUser.displayName != null &&
-                        FirebaseAuth.instance.currentUser.displayName.isNotEmpty
-                    ? FirebaseAuth.instance.currentUser.displayName
-                    : "-",
+                field: 'Nama',
+                value: 'Hafni Sulun',
               ),
               Item(
-                field: "Email",
-                value: FirebaseAuth.instance.currentUser.email != null &&
-                        FirebaseAuth.instance.currentUser.email.isNotEmpty
-                    ? FirebaseAuth.instance.currentUser.email
-                    : "-",
+                field: 'Email',
+                value: 'hafni.sulun@gmail.com',
               ),
               Item(
-                field: "No. telp.",
-                value: FirebaseAuth.instance.currentUser.phoneNumber != null &&
-                        FirebaseAuth.instance.currentUser.phoneNumber.isNotEmpty
-                    ? FirebaseAuth.instance.currentUser.phoneNumber
-                    : "-",
+                field: 'No. telp.',
+                value: '+62 856-2489-0099',
               ),
               Item(
-                field: "Jenis kelamin",
-                value: "Laki-laki",
+                field: 'Jenis kelamin',
+                value: 'Laki-laki',
               ),
               Item(
-                field: "Alamat",
+                field: 'Alamat',
                 value:
-                    "STR\nSentra Timur Residence\nTower Biru\nUnit B3030A\nPulo Gebang, Cakung\nJakarta Timur, 13950",
+                    'STR\nSentra Timur Residence\nTower Biru\nUnit B3030A\nPulo Gebang, Cakung\nJakarta Timur, 13950',
               ),
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 24.0),
-                child: OutlineButton(
-                  onPressed: () => signOutGoogle(context),
+                child: OutlinedButton(
+                  onPressed: () => logout(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      "KELUAR",
+                      'KELUAR',
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
                     ),
                   ),
-                  borderSide: BorderSide(color: Colors.red),
-                  highlightedBorderColor: Colors.red,
-                  textColor: Colors.red,
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.red),
+                    primary: Colors.red,
+                  ),
                 ),
               ),
             ],
@@ -75,10 +66,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  void signOutGoogle(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    print(
-        "[AccountScreen] [signOutGoogle] currentUser: ${FirebaseAuth.instance.currentUser}");
+  void logout(BuildContext context) async {
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
@@ -93,8 +81,8 @@ class Item extends StatelessWidget {
   final String value;
 
   Item({
-    @required this.field,
-    @required this.value,
+    required this.field,
+    required this.value,
   });
 
   @override

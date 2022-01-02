@@ -1,83 +1,155 @@
 import 'package:apate/screens/home_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.green,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(
-                image: AssetImage("assets/images/apate_a_white_logo.png"),
-                height: 192,
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight,
               ),
-              SizedBox(height: 128),
-              _buildLoginButton(context),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton(BuildContext context) {
-    return FlatButton(
-      onPressed: () => signInWithGoogle(context),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: AssetImage("assets/images/google_g_logo.png"),
-              height: 24,
+              child: Column(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 128,
+                      bottom: 64,
+                    ),
+                    child: Center(
+                      child: Image(
+                        image:
+                            AssetImage('assets/images/apate_a_green_logo.png'),
+                        height: 128,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      children: <Widget>[
+                        _buildLoginForm(context),
+                        _buildForgotPasswordButton(context),
+                        _buildDivider(context),
+                        _buildRegisterButton(context),
+                      ],
+                    ),
+                  ),
+                ],
+              ), // your column
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12),
-              child: Text(
-                "Masuk dengan Google",
-                style: TextStyle(fontSize: 16, color: Colors.green),
-              ),
-            )
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  void signInWithGoogle(BuildContext context) async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
+  Widget _buildLoginForm(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: TextField(
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Email',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Password',
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => _logIn(context),
+                style: ElevatedButton.styleFrom(
+                  textStyle: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: Text('LOG IN'),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-    User user = userCredential.user;
-    String idToken = await user.getIdToken();
-    assert(!user.isAnonymous);
-    assert(idToken != null);
-    assert(user.uid == FirebaseAuth.instance.currentUser.uid);
-    print("User Name: ${user.displayName}");
-    print("User Email: ${user.email}");
+  }
+
+  Widget _buildForgotPasswordButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextButton(
+        onPressed: () => _forgotPassword(context),
+        child: Text('Forgot password?'),
+      ),
+    );
+  }
+
+  Widget _buildDivider(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 16,
+        bottom: 24,
+      ),
+      child: Divider(color: Colors.grey),
+    );
+  }
+
+  Widget _buildRegisterButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        children: [
+          Text("Don't have an account?"),
+          TextButton(
+            onPressed: () => _signUp(context),
+            child: Text('Sign up'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _logIn(BuildContext context) async {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
       (_) => false,
     );
+  }
+
+  void _forgotPassword(BuildContext context) async {
+    print('forgot password');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Forgot password'),
+    ));
+  }
+
+  void _signUp(BuildContext context) async {
+    print('sign up');
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Sign up'),
+    ));
   }
 }

@@ -5,35 +5,35 @@ class Merchants {
   Meta meta;
 
   Merchants({
-    this.data,
-    this.meta,
+    required this.data,
+    required this.meta,
   });
 
-  Merchants.fromJson(Map<String, dynamic> json) {
-    meta = new Meta.fromJson(json['meta']);
+  factory Merchants.fromJson(Map<String, dynamic> json) {
+    List<Merchant> data = new List.empty(growable: true);
     if (json['data'] != null) {
-      data = new List<Merchant>();
       json['data'].forEach((v) {
         data.add(new Merchant.fromJson(v));
       });
     }
+    Merchants merchants =
+        Merchants(data: data, meta: new Meta.fromJson(json['meta']));
+    return merchants;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = new Map<String, dynamic>();
     map['meta'] = this.meta;
-    if (this.data != null) {
-      map['results'] = this.data.map((v) => v.toJson()).toList();
-    }
+    map['results'] = this.data.map((v) => v.toJson()).toList();
     return map;
   }
 }
 
 class Meta {
-  int count;
-  int total;
-  int page;
-  int limit;
+  int? count;
+  int? total;
+  int? page;
+  int? limit;
 
   Meta({
     this.count,
@@ -42,11 +42,13 @@ class Meta {
     this.limit,
   });
 
-  Meta.fromJson(Map<String, dynamic> json) {
-    count = json['count'];
-    total = json['total'];
-    page = json['page'];
-    limit = json['limit'];
+  factory Meta.fromJson(Map<String, dynamic> json) {
+    return Meta(
+      count: json['count'],
+      total: json['totalResults'],
+      page: json['page'],
+      limit: json['limit'],
+    );
   }
 
   Map<String, dynamic> toJson() {
