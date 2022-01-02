@@ -123,7 +123,7 @@ class ActionButtons extends StatelessWidget {
       },
       listener: (context, state) {
         if (state is CartItemFetchError) {
-          Scaffold.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
             ),

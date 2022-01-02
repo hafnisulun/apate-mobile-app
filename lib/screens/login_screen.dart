@@ -141,15 +141,19 @@ class LoginScreen extends StatelessWidget {
 
   void _forgotPassword(BuildContext context) async {
     print('forgot password');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Forgot password'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Forgot password'),
+      ),
+    );
   }
 
   void _signUp(BuildContext context) async {
     print('sign up');
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Sign up'),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sign up'),
+      ),
+    );
   }
 }
