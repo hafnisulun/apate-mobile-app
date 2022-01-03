@@ -1,48 +1,94 @@
+import 'package:apate/bloc/login/login_bloc.dart';
+import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 32),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: Column(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 128,
-                      bottom: 64,
-                    ),
-                    child: Center(
-                      child: Image(
-                        image:
-                            AssetImage('assets/images/apate_a_green_logo.png'),
-                        height: 128,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      children: <Widget>[
-                        _buildLoginForm(context),
-                        _buildForgotPasswordButton(context),
-                        _buildDivider(context),
-                        _buildRegisterButton(context),
-                      ],
-                    ),
-                  ),
-                ],
-              ), // your column
+      body: BlocProvider(
+        create: (context) => LoginBloc(LoginRepository()),
+        child: LoginView(),
+      ),
+    );
+  }
+}
+
+class LoginView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        if (state.status == 'success') {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (_) => false,
+          );
+        } else if (state.status == 'error') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
             ),
+          );
+          context.read<LoginBloc>().add(LoginErrorShown());
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+          return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: 128,
+                              bottom: 64,
+                            ),
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(
+                                    'assets/images/apate_a_green_logo.png'),
+                                height: 128,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              children: <Widget>[
+                                _buildLoginForm(context),
+                                _buildForgotPasswordButton(context),
+                                _buildDivider(context),
+                                _buildRegisterButton(context),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ), // your column
+                    ),
+                  ),
+                  OpacityView(),
+                  LoadingView(),
+                ],
+              );
+            },
           );
         },
       ),
@@ -58,21 +104,27 @@ class LoginScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: TextField(
-              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Email',
               ),
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (value) {
+                context.read<LoginBloc>().add(EmailChanged(email: value));
+              },
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: TextField(
-              obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Password',
               ),
+              obscureText: true,
+              onChanged: (value) {
+                context.read<LoginBloc>().add(PasswordChanged(password: value));
+              },
             ),
           ),
           Padding(
@@ -132,11 +184,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   void _logIn(BuildContext context) async {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
-      (_) => false,
-    );
+    context.read<LoginBloc>().add(LoginSubmitted());
   }
 
   void _forgotPassword(BuildContext context) async {
@@ -155,5 +203,48 @@ class LoginScreen extends StatelessWidget {
         content: Text('Sign up'),
       ),
     );
+  }
+}
+
+class OpacityView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      if (state.status == 'submitting') {
+        return Opacity(
+          opacity: 0.7,
+          child: const ModalBarrier(
+            dismissible: false,
+            color: Colors.black,
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
+  }
+}
+
+class LoadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      if (state.status == 'submitting') {
+        return Center(
+          child: AlertDialog(
+            content: new Row(
+              children: [
+                CircularProgressIndicator(),
+                Container(
+                    margin: EdgeInsets.only(left: 16),
+                    child: Text("Loading...")),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 }
