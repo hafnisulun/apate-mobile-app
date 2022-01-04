@@ -3,7 +3,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_event.dart';
-
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -51,13 +50,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       var login = await _loginRepository.doLogin(state.email, state.password);
       if (login == null) {
-        emit(state.copyWith(status: 'error', message: 'Network error'));
+        emit(state.copyWith(
+            status: 'error', message: 'Koneksi internet terputus'));
       } else {
         emit(state.copyWith(status: 'success', message: ''));
       }
     } on Exception catch (e) {
-      print('exception: $e');
-      print('exception: ${e.toString()}');
       emit(state.copyWith(status: 'error', message: e.toString()));
     }
   }

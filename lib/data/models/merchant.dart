@@ -1,23 +1,26 @@
 class Merchant {
-  String id;
+  String uuid;
   String name;
-  String address;
+  double lat;
+  double lon;
   String? phone;
   String? image;
 
   Merchant({
-    required this.id,
+    required this.uuid,
     required this.name,
-    required this.address,
+    required this.lat,
+    required this.lon,
     this.phone,
     this.image,
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {
     return Merchant(
-      id: json['id'],
+      uuid: json['uuid'],
       name: json['name'],
-      address: json['address'],
+      lat: json['lat'],
+      lon: json['lon'],
       phone: json['phone'],
       image: json['image'],
     );
@@ -25,9 +28,10 @@ class Merchant {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = new Map<String, dynamic>();
-    map['id'] = this.id;
+    map['uuid'] = this.uuid;
     map['name'] = this.name;
-    map['address'] = this.address;
+    map['lat'] = this.lat;
+    map['lon'] = this.lon;
     map['phone'] = this.phone;
     map['image'] = this.image;
     return map;

@@ -24,7 +24,7 @@ class Merchants {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = new Map<String, dynamic>();
     map['meta'] = this.meta;
-    map['results'] = this.data.map((v) => v.toJson()).toList();
+    map['data'] = this.data.map((v) => v.toJson()).toList();
     return map;
   }
 }

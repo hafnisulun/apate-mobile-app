@@ -56,7 +56,7 @@ class _MerchantBodyState extends State<MerchantBody> {
       children: [
         BlocProvider(
           create: (context) => ProductsBloc(ProductsRepository())
-            ..add(GetProductsEvent(widget.merchant.id)),
+            ..add(GetProductsEvent(widget.merchant.uuid)),
           child: MerchantScrollView(
             merchant: widget.merchant,
             updateCartCallback: _notifier.updateCart,
@@ -169,7 +169,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
 
       widgets.add(
         ProductCard(
-          merchantId: widget.merchant.id,
+          merchantId: widget.merchant.uuid,
           product: product,
           qty: qty,
           onCartItemUpdated: _updateCartItem,
@@ -232,7 +232,7 @@ class MerchantInfo extends StatelessWidget {
             children: [
               Icon(Icons.location_on_outlined),
               SizedBox(width: 8.0),
-              Text(merchant.address),
+              Text('${merchant.lat}, ${merchant.lon}'),
             ],
           ),
           SizedBox(height: 12.0),

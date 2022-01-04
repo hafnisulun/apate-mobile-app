@@ -41,11 +41,7 @@ class MerchantCard extends StatelessWidget {
                       topLeft: Radius.circular(8),
                       topRight: Radius.circular(8),
                     ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "assets/images/no_image.png",
-                      image: merchant.image ?? "assets/images/no_image.png",
-                      fit: BoxFit.fill,
-                    ),
+                    child: _buildImage(merchant.image),
                   ),
                   SizedBox(
                     height: 54,
@@ -73,5 +69,20 @@ class MerchantCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildImage(String? image) {
+    if (image == null) {
+      return Image.asset(
+        "assets/images/no_image.png",
+        fit: BoxFit.fill,
+      );
+    } else {
+      return FadeInImage.assetNetwork(
+        placeholder: "assets/images/no_image.png",
+        image: image,
+        fit: BoxFit.fill,
+      );
+    }
   }
 }

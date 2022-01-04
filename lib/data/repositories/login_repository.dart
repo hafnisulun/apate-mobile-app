@@ -1,5 +1,6 @@
 import 'package:apate/data/models/login.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart';
 
 import '../../constants.dart';
@@ -33,21 +34,27 @@ class LoginRepository {
       print("[LoginRepository] [doLogin] response: $response");
       var login = Login.fromJson(response.data);
       print("[LoginRepository] [doLogin] login: $login");
+      _saveTokens(login.accessToken.token, login.refreshToken.token);
       return login;
     } on DioError catch (e) {
       if (e.response!.statusCode == 403) {
-        throw LoginException('Invalid email or password');
+        throw Exception('Email atau password salah');
       }
-      throw LoginException('Network error');
+      throw Exception('Koneksi internet terputus');
     }
   }
-}
 
-class LoginException implements Exception {
-  final String message;
+  Future<String?> getAccessToken() async {
+    return await FlutterSecureStorage().read(key: 'access_token');
+  }
 
-  LoginException(this.message);
+  Future<String?> getRefreshToken() async {
+    return await FlutterSecureStorage().read(key: 'refresh_token');
+  }
 
-  @override
-  String toString() => message;
+  void _saveTokens(String accessToken, String refreshToken) async {
+    final storage = new FlutterSecureStorage();
+    await storage.write(key: 'access_token', value: accessToken);
+    await storage.write(key: 'refresh_token', value: refreshToken);
+  }
 }
