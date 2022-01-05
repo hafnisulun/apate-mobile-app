@@ -1,4 +1,5 @@
 import 'package:apate/data/models/merchant.dart';
+import 'package:apate/data/models/meta.dart';
 
 class Merchants {
   List<Merchant> data;
@@ -25,38 +26,6 @@ class Merchants {
     final Map<String, dynamic> map = new Map<String, dynamic>();
     map['meta'] = this.meta;
     map['data'] = this.data.map((v) => v.toJson()).toList();
-    return map;
-  }
-}
-
-class Meta {
-  int? count;
-  int? total;
-  int? page;
-  int? limit;
-
-  Meta({
-    this.count,
-    this.total,
-    this.page,
-    this.limit,
-  });
-
-  factory Meta.fromJson(Map<String, dynamic> json) {
-    return Meta(
-      count: json['count'],
-      total: json['totalResults'],
-      page: json['page'],
-      limit: json['limit'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = new Map<String, dynamic>();
-    map['count'] = this.count;
-    map['total'] = this.total;
-    map['page'] = this.page;
-    map['limit'] = this.limit;
     return map;
   }
 }

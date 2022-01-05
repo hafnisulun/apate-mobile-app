@@ -11,18 +11,18 @@ part 'cart_item_state.dart';
 class CartItemBloc extends Bloc<CartItemEvent, CartItemState> {
   final CartRepository _cartRepository;
 
-  CartItemBloc(this._cartRepository) : super(CartItemFetchLoading());
+  CartItemBloc(this._cartRepository) : super(CartItemFetchLoading()) {
+    on<CartItemFetchEvent>(_onCartItemFetchEvent);
+  }
 
-  @override
-  Stream<CartItemState> mapEventToState(CartItemEvent event) async* {
-    if (event is GetCartItemEvent) {
-      try {
-        yield CartItemFetchLoading();
-        final item = await _cartRepository.getCartItem(event.productId);
-        yield CartItemFetchSuccess(item: item);
-      } on DbException {
-        yield CartItemFetchError(message: "Terjadi kesalahan");
-      }
+  void _onCartItemFetchEvent(
+      CartItemFetchEvent event, Emitter<CartItemState> emit) async {
+    try {
+      emit(CartItemFetchLoading());
+      final item = await _cartRepository.getCartItem(event.productId);
+      emit(CartItemFetchSuccess(item: item));
+    } on DbException {
+      emit(CartItemFetchError(message: "Terjadi kesalahan"));
     }
   }
 }

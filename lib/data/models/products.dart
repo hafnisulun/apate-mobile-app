@@ -1,3 +1,4 @@
+import 'package:apate/data/models/meta.dart';
 import 'package:apate/data/models/product.dart';
 
 class Products {
@@ -16,47 +17,16 @@ class Products {
         data.add(new Product.fromJson(v));
       });
     }
-    return Products(data: data, meta: new Meta.fromJson(json['meta']));
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = new Map<String, dynamic>();
-    map['meta'] = this.meta;
-    if (this.data != null) {
-      map['results'] = this.data.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
-}
-
-class Meta {
-  int page;
-  int limit;
-  int totalResults;
-  int totalPages;
-
-  Meta({
-    required this.page,
-    required this.limit,
-    required this.totalResults,
-    required this.totalPages,
-  });
-
-  factory Meta.fromJson(Map<String, dynamic> json) {
-    return Meta(
-      page: json['page'],
-      limit: json['limit'],
-      totalResults: json['totalResults'],
-      totalPages: json['totalPages'],
+    return Products(
+      data: data,
+      meta: new Meta.fromJson(json['meta']),
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = new Map<String, dynamic>();
-    map['page'] = this.page;
-    map['limit'] = this.limit;
-    map['totalResults'] = this.totalResults;
-    map['totalPages'] = this.totalPages;
+    map['meta'] = this.meta;
+    map['data'] = this.data.map((v) => v.toJson()).toList();
     return map;
   }
 }

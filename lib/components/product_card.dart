@@ -4,7 +4,6 @@ import 'package:apate/data/models/product.dart';
 import 'package:apate/data/repositories/cart_repository.dart';
 import 'package:apate/utils/number.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatelessWidget {
@@ -22,6 +21,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('product: $product');
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -84,7 +84,7 @@ class ProductCard extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: BlocProvider(
                     create: (context) => CartItemBloc(CartRepository())
-                      ..add(GetCartItemEvent(product.id)),
+                      ..add(CartItemFetchEvent(product.uuid)),
                     child: ActionButtons(
                       merchantId: merchantId,
                       product: product,
@@ -138,7 +138,7 @@ class ActionButtons extends StatelessWidget {
           } else {
             final CartItem cartItem = CartItem(
               merchantId: merchantId,
-              productId: product.id,
+              productId: product.uuid,
               productName: product.name,
               productPrice: product.price,
               productQty: 0,

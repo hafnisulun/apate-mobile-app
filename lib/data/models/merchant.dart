@@ -4,7 +4,7 @@ class Merchant {
   double lat;
   double lon;
   String? phone;
-  String? image;
+  String image;
 
   Merchant({
     required this.uuid,
@@ -12,7 +12,7 @@ class Merchant {
     required this.lat,
     required this.lon,
     this.phone,
-    this.image,
+    required this.image,
   });
 
   factory Merchant.fromJson(Map<String, dynamic> json) {

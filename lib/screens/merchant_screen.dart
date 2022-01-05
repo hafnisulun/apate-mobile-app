@@ -56,7 +56,7 @@ class _MerchantBodyState extends State<MerchantBody> {
       children: [
         BlocProvider(
           create: (context) => ProductsBloc(ProductsRepository())
-            ..add(GetProductsEvent(widget.merchant.uuid)),
+            ..add(ProductsFetchEvent(widget.merchant.uuid)),
           child: MerchantScrollView(
             merchant: widget.merchant,
             updateCartCallback: _notifier.updateCart,
@@ -117,8 +117,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
                   title: Text(widget.merchant.name),
                   background: FadeInImage.assetNetwork(
                     placeholder: "assets/images/no_image.png",
-                    image:
-                        widget.merchant.image ?? "assets/images/no_image.png",
+                    image: widget.merchant.image,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -155,7 +154,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
       Product product = products.data[i];
       int j = 0;
       while (j < _cart.length) {
-        if (_cart[j].productId == product.id) {
+        if (_cart[j].productId == product.uuid) {
           break;
         }
         j++;
@@ -210,7 +209,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
         result = await _dbHelper.insert(item);
       }
       if (result > 0) {
-        cartItemCubit.add(GetCartItemEvent(item.productId));
+        cartItemCubit.add(CartItemFetchEvent(item.productId));
         widget.updateCartCallback();
       }
     });

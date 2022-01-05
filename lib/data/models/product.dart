@@ -1,12 +1,12 @@
 class Product {
-  String id;
+  String uuid;
   String name;
   int price;
   String? image;
   String? description;
 
   Product({
-    required this.id,
+    required this.uuid,
     required this.name,
     required this.price,
     this.image,
@@ -15,7 +15,7 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['id'],
+      uuid: json['uuid'],
       name: json['name'],
       price: json['price'],
       image: json['image'],
@@ -25,7 +25,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = new Map<String, dynamic>();
-    map['id'] = this.id;
+    map['uuid'] = this.uuid;
     map['name'] = this.name;
     map['price'] = this.price;
     map['image'] = this.image;

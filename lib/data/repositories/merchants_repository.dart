@@ -27,7 +27,7 @@ class MerchantsRepository {
       final response = await dio.get(Uri.encodeFull(url));
       print('[MerchantsRepository] [getMerchants] response $response');
       return Merchants.fromJson(response.data);
-    } on DioError catch (e) {
+    } on DioError catch (_) {
       throw Exception('Koneksi internet terputus');
     }
   }

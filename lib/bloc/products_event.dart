@@ -7,8 +7,8 @@ abstract class ProductsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetProductsEvent extends ProductsEvent {
-  final String merchantId;
+class ProductsFetchEvent extends ProductsEvent {
+  final String merchantUuid;
 
-  GetProductsEvent(this.merchantId);
+  ProductsFetchEvent(this.merchantUuid);
 }
