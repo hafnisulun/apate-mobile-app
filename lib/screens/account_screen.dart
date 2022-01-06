@@ -1,4 +1,4 @@
-import 'package:apate/screens/login_screen.dart';
+import 'package:apate/utils/auth.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -43,14 +43,12 @@ class AccountScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.only(top: 24.0),
                 child: OutlinedButton(
-                  onPressed: () => logout(context),
+                  onPressed: () => Auth.logout(context),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
                       'KELUAR',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
+                      style: TextStyle(fontSize: 16.0),
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
@@ -63,15 +61,6 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void logout(BuildContext context) async {
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (BuildContext context) => LoginScreen(),
-      ),
-      (_) => false,
     );
   }
 }

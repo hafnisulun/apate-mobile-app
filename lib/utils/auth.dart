@@ -3,9 +3,11 @@ import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/login_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Auth {
   static void logout(BuildContext context) async {
+    FlutterSecureStorage().deleteAll();
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
