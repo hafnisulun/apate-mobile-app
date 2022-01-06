@@ -152,16 +152,16 @@ class ActionButtons extends StatelessWidget {
   }
 
   Widget _buildAddButton(CartItem cartItem, CartItemBloc cartItemCubit) {
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         cartItem.productQty++;
         onCartItemUpdated(cartItem, cartItemCubit);
       },
-      child: Text(
-        "TAMBAH",
-        style: TextStyle(color: Colors.white),
+      child: Text("TAMBAH"),
+      style: TextButton.styleFrom(
+        primary: Colors.white,
+        backgroundColor: Colors.green,
       ),
-      color: Colors.green,
     );
   }
 
@@ -174,16 +174,18 @@ class ActionButtons extends StatelessWidget {
       children: [
         SizedBox(
           width: 36.0,
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            color: Colors.green,
-            textColor: Colors.white,
-            shape: CircleBorder(),
+          child: TextButton(
             child: Icon(Icons.remove),
             onPressed: () {
               cartItem.productQty--;
               onCartItemUpdated(cartItem, cartItemCubit);
             },
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: Colors.green,
+              padding: EdgeInsets.zero,
+              shape: CircleBorder(),
+            ),
           ),
         ),
         Container(
@@ -200,16 +202,19 @@ class ActionButtons extends StatelessWidget {
         ),
         SizedBox(
           width: 36.0,
-          child: FlatButton(
+          child: TextButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              cartItem.productQty++;
+              onCartItemUpdated(cartItem, cartItemCubit);
+            },
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: Colors.green,
               padding: EdgeInsets.zero,
-              color: Colors.green,
-              textColor: Colors.white,
               shape: CircleBorder(),
-              child: Icon(Icons.add),
-              onPressed: () {
-                cartItem.productQty++;
-                onCartItemUpdated(cartItem, cartItemCubit);
-              }),
+            ),
+          ),
         ),
       ],
     );

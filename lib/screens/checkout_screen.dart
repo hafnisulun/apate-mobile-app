@@ -2,7 +2,6 @@ import 'package:apate/components/cart_item_card.dart';
 import 'package:apate/data/models/cart_item.dart';
 import 'package:apate/db_helper.dart';
 import 'package:apate/utils/number.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -188,18 +187,15 @@ class CheckoutOrderButton extends StatelessWidget {
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () => _sendOrderMessage(context),
-                color: Colors.green,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    "PESAN",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                  ),
+                  child: Text("PESAN", style: TextStyle(fontSize: 16.0)),
+                ),
+                style: TextButton.styleFrom(
+                  primary: Colors.white,
+                  backgroundColor: Colors.green,
                 ),
               ),
             ),
@@ -209,12 +205,12 @@ class CheckoutOrderButton extends StatelessWidget {
     );
   }
 
-  Future<void> _showAlertDialog(
+  void _showAlertDialog(
     BuildContext context,
     String title,
     String message,
   ) async {
-    return showDialog<void>(
+    return await showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -228,7 +224,7 @@ class CheckoutOrderButton extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text("OK"),
               onPressed: () {
                 Navigator.of(context).pop();

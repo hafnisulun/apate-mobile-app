@@ -99,7 +99,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
     return BlocConsumer<ProductsBloc, ProductsState>(
       listener: (context, state) {
         if (state is ProductsFetchError) {
-          Scaffold.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
             ),
@@ -386,14 +386,13 @@ class _MerchantCartState extends State<MerchantCart> {
         duration: Duration(milliseconds: 300),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: FlatButton(
+          child: TextButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => CheckoutScreen()),
               ).then((value) => widget.updateCartCallback());
             },
-            color: Colors.green,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Row(
@@ -419,10 +418,7 @@ class _MerchantCartState extends State<MerchantCart> {
                       ),
                       child: Text(
                         "${Number.formatCurrency(widget.totalAmount)}",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.0,
-                        ),
+                        style: TextStyle(fontSize: 16.0),
                         textAlign: TextAlign.start,
                       ),
                     ),
@@ -433,6 +429,10 @@ class _MerchantCartState extends State<MerchantCart> {
                   ),
                 ],
               ),
+            ),
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+              backgroundColor: Colors.green,
             ),
           ),
         ),

@@ -1,6 +1,4 @@
-import 'package:apate/screens/notifications_screen.dart';
 import 'package:apate/screens/screens.dart';
-import 'package:apate/screens/shop_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 

@@ -46,7 +46,7 @@ class MerchantGridView extends StatelessWidget {
             children: [
               ...List.generate(
                   state.merchants.data.length,
-                      (index) =>
+                  (index) =>
                       MerchantCard(merchant: state.merchants.data[index]))
             ],
           );
@@ -58,13 +58,13 @@ class MerchantGridView extends StatelessWidget {
                 children: [
                   Text("Koneksi internet terputus"),
                   SizedBox(height: 8.0),
-                  FlatButton(
+                  TextButton(
                     onPressed: () =>
                         context.read<MerchantsBloc>().add(LoadMerchantsEvent()),
-                    color: Colors.green,
-                    child: Text(
-                      "COBA LAGI",
-                      style: TextStyle(color: Colors.white),
+                    child: Text("COBA LAGI"),
+                    style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: Colors.green,
                     ),
                   )
                 ],
