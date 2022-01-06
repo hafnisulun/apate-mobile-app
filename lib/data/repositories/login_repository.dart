@@ -6,19 +6,15 @@ import 'package:path/path.dart';
 import '../../constants.dart';
 
 class LoginRepository {
-  Dio dio = Dio();
+  Dio _dio = Dio();
 
   Future<Login?> doLogin(String email, String password) async {
     try {
-      print("[LoginRepository] [doLogin] email: $email");
-      print("[LoginRepository] [doLogin] password: $password");
-      String clientId = 'id123';
-      String clientSecret = 'secret123';
-      dio.interceptors
+      _dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
         var customHeaders = {
-          "X-CLient-Id": clientId,
-          "X-Client-Secret": clientSecret,
+          "X-CLient-Id": API_CLIENT_ID,
+          "X-Client-Secret": API_CLIENT_SECRET,
         };
         options.headers.addAll(customHeaders);
         return handler.next(options);
@@ -30,15 +26,45 @@ class LoginRepository {
         'email': email,
         'password': password,
       };
-      final response = await dio.post(Uri.encodeFull(url), data: data);
+      final response = await _dio.post(Uri.encodeFull(url), data: data);
       print("[LoginRepository] [doLogin] response: $response");
       var login = Login.fromJson(response.data);
-      print("[LoginRepository] [doLogin] login: $login");
       _saveTokens(login.accessToken.token, login.refreshToken.token);
       return login;
     } on DioError catch (e) {
-      if (e.response!.statusCode == 403) {
+      if (e.response!.statusCode == 401) {
         throw Exception('Email atau password salah');
+      }
+      throw Exception('Koneksi internet terputus');
+    }
+  }
+
+  Future<Login?> refreshToken() async {
+    try {
+      _dio.interceptors
+          .add(InterceptorsWrapper(onRequest: (options, handler) async {
+        var customHeaders = {
+          "X-CLient-Id": API_CLIENT_ID,
+          "X-Client-Secret": API_CLIENT_SECRET
+        };
+        options.headers.addAll(customHeaders);
+        return handler.next(options);
+      }));
+      String url = join(API_BASE_URL, "auth");
+      print("[LoginRepository] [refreshToken] url: $url");
+      var data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': await getRefreshToken(),
+      };
+      final response = await _dio.post(Uri.encodeFull(url), data: data);
+      print("[LoginRepository] [refreshToken] response: $response");
+      var login = Login.fromJson(response.data);
+      _saveTokens(login.accessToken.token, login.refreshToken.token);
+      return login;
+    } on DioError catch (e) {
+      print('[LoginRepository] [refreshToken] exception: ' + e.message);
+      if (e.response!.statusCode == 401) {
+        throw Exception('Refresh token invalid');
       }
       throw Exception('Koneksi internet terputus');
     }

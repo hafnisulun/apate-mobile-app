@@ -21,7 +21,6 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('product: $product');
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

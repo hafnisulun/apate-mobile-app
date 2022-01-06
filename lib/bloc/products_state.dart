@@ -4,6 +4,11 @@ abstract class ProductsState extends Equatable {
   const ProductsState();
 }
 
+class ProductsFetchUnauthorized extends ProductsState {
+  @override
+  List<Object> get props => [];
+}
+
 class ProductsFetchLoading extends ProductsState {
   @override
   List<Object> get props => [];

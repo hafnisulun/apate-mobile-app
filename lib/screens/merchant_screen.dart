@@ -8,6 +8,7 @@ import 'package:apate/data/models/products.dart';
 import 'package:apate/data/repositories/products_repository.dart';
 import 'package:apate/db_helper.dart';
 import 'package:apate/screens/checkout_screen.dart';
+import 'package:apate/utils/auth.dart';
 import 'package:apate/utils/number.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,7 +99,9 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
 
     return BlocConsumer<ProductsBloc, ProductsState>(
       listener: (context, state) {
-        if (state is ProductsFetchError) {
+        if (state is ProductsFetchUnauthorized) {
+          Auth.logout(context);
+        } else if (state is ProductsFetchError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
