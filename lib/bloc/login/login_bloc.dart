@@ -1,18 +1,24 @@
+import 'package:apate/data/models/email.dart';
+import 'package:apate/data/models/password.dart';
 import 'package:apate/data/repositories/login_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
 
 part 'login_event.dart';
+
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginRepository _loginRepository;
 
   LoginBloc(this._loginRepository) : super(LoginState()) {
-    on<LoginErrorShown>(_onLoginErrorShown);
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
-    on<LoginSubmitted>(_onLoginSubmitted);
+    on<EmailUnfocused>(_onEmailUnfocused);
+    on<PasswordUnfocused>(_onPasswordUnfocused);
+    on<FormSubmitted>(_onFormSubmitted);
   }
 
   @override
@@ -21,42 +27,77 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     super.onTransition(transition);
   }
 
-  void _onLoginErrorShown(LoginErrorShown event, Emitter<LoginState> emit) {
-    emit(state.copyWith(
-      status: 'idle',
-      message: '',
-    ));
-  }
-
   void _onEmailChanged(EmailChanged event, Emitter<LoginState> emit) {
+    final email = Email.dirty(event.email);
     emit(state.copyWith(
-      email: event.email,
+      email: email.valid ? email : Email.pure(event.email),
+      status: Formz.validate([email, state.password]),
     ));
   }
 
   void _onPasswordChanged(PasswordChanged event, Emitter<LoginState> emit) {
+    final password = Password.dirty(event.password);
     emit(state.copyWith(
-      password: event.password,
+      password: password.valid ? password : Password.pure(event.password),
+      status: Formz.validate([state.email, password]),
     ));
   }
 
-  void _onLoginSubmitted(LoginSubmitted event, Emitter<LoginState> emit) async {
+  void _onEmailUnfocused(EmailUnfocused event, Emitter<LoginState> emit) {
+    final email = Email.dirty(state.email.value);
     emit(state.copyWith(
-      status: 'submitting',
-      message: '',
-      email: state.email,
-      password: state.password,
+      email: email,
+      status: Formz.validate([email, state.password]),
     ));
-    try {
-      var login = await _loginRepository.doLogin(state.email, state.password);
-      if (login == null) {
-        emit(state.copyWith(
-            status: 'error', message: 'Koneksi internet terputus'));
-      } else {
-        emit(state.copyWith(status: 'success', message: ''));
+  }
+
+  void _onPasswordUnfocused(
+    PasswordUnfocused event,
+    Emitter<LoginState> emit,
+  ) {
+    final password = Password.dirty(state.password.value);
+    emit(state.copyWith(
+      password: password,
+      status: Formz.validate([state.email, password]),
+    ));
+  }
+
+  void _onFormSubmitted(FormSubmitted event, Emitter<LoginState> emit) async {
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
+    emit(state.copyWith(
+      email: email,
+      password: password,
+      status: Formz.validate([email, password]),
+    ));
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+      try {
+        var login = await _loginRepository.doLogin(state.email, state.password);
+        if (login == null) {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Koneksi internet terputus',
+          ));
+        } else {
+          emit(state.copyWith(
+            status: FormzStatus.submissionSuccess,
+            message: '',
+          ));
+        }
+      } on DioError catch (e) {
+        if (e.response?.statusCode == 401) {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Email atau password salah',
+          ));
+        } else {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Koneksi internet terputus',
+          ));
+        }
       }
-    } on Exception catch (e) {
-      emit(state.copyWith(status: 'error', message: e.toString()));
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -26,19 +27,19 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
-        if (state.status == 'success') {
+        if (state.status.isSubmissionSuccess) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
             (_) => false,
           );
-        } else if (state.status == 'error') {
+        } else if (state.status.isSubmissionFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
             ),
           );
-          context.read<LoginBloc>().add(LoginErrorShown());
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(
@@ -73,10 +74,16 @@ class LoginView extends StatelessWidget {
                             padding: EdgeInsets.symmetric(vertical: 8),
                             child: Column(
                               children: <Widget>[
-                                _buildLoginForm(context),
-                                _buildForgotPasswordButton(context),
-                                _buildDivider(context),
-                                _buildRegisterButton(context),
+                                LoginForm(),
+                                ForgotPasswordButton(),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 16,
+                                    bottom: 24,
+                                  ),
+                                  child: Divider(color: Colors.grey),
+                                ),
+                                SignUpButton(),
                               ],
                             ),
                           ),
@@ -94,113 +101,126 @@ class LoginView extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildLoginForm(BuildContext context) {
+class LoginForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Email',
-              ),
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (value) {
-                context.read<LoginBloc>().add(EmailChanged(email: value));
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Password',
-              ),
-              obscureText: true,
-              onChanged: (value) {
-                context.read<LoginBloc>().add(PasswordChanged(password: value));
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => _logIn(context),
-                style: ElevatedButton.styleFrom(
-                  textStyle: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: Text('LOG IN'),
-              ),
-            ),
-          ),
+          EmailInput(),
+          PasswordInput(),
+          SubmitButton(),
         ],
       ),
     );
   }
+}
 
-  Widget _buildForgotPasswordButton(BuildContext context) {
+class EmailInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Email',
+        ),
+        keyboardType: TextInputType.emailAddress,
+        onChanged: (value) {
+          context.read<LoginBloc>().add(EmailChanged(email: value));
+        },
+      ),
+    );
+  }
+}
+
+class PasswordInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Password',
+        ),
+        obscureText: true,
+        onChanged: (value) {
+          context.read<LoginBloc>().add(PasswordChanged(password: value));
+        },
+      ),
+    );
+  }
+}
+
+class SubmitButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<LoginBloc, LoginState>(
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: state.status.isValidated
+                  ? () => context.read<LoginBloc>().add(FormSubmitted())
+                  : null,
+              style: ElevatedButton.styleFrom(
+                textStyle: TextStyle(
+                  fontSize: 16.0,
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+              child: Text('Masuk'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ForgotPasswordButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextButton(
-        onPressed: () => _forgotPassword(context),
+        onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Forgot password'),
+          ),
+        ),
         child: Text('Forgot password?'),
       ),
     );
   }
+}
 
-  Widget _buildDivider(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 16,
-        bottom: 24,
-      ),
-      child: Divider(color: Colors.grey),
-    );
-  }
-
-  Widget _buildRegisterButton(BuildContext context) {
+class SignUpButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
           Text("Don't have an account?"),
           TextButton(
-            onPressed: () => _signUp(context),
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Sign up'),
+              ),
+            ),
             child: Text('Sign up'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _logIn(BuildContext context) async {
-    context.read<LoginBloc>().add(LoginSubmitted());
-  }
-
-  void _forgotPassword(BuildContext context) async {
-    print('forgot password');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Forgot password'),
-      ),
-    );
-  }
-
-  void _signUp(BuildContext context) async {
-    print('sign up');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sign up'),
       ),
     );
   }
@@ -210,7 +230,7 @@ class OpacityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      if (state.status == 'submitting') {
+      if (state.status.isSubmissionInProgress) {
         return Opacity(
           opacity: 0.7,
           child: const ModalBarrier(
@@ -229,7 +249,7 @@ class LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      if (state.status == 'submitting') {
+      if (state.status.isSubmissionInProgress) {
         return Center(
           child: AlertDialog(
             content: new Row(

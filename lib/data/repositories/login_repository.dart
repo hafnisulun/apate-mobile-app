@@ -1,4 +1,6 @@
+import 'package:apate/data/models/email.dart';
 import 'package:apate/data/models/login.dart';
+import 'package:apate/data/models/password.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart';
@@ -8,7 +10,7 @@ import '../../constants.dart';
 class LoginRepository {
   Dio _dio = Dio();
 
-  Future<Login?> doLogin(String email, String password) async {
+  Future<Login?> doLogin(Email email, Password password) async {
     try {
       _dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
@@ -23,8 +25,8 @@ class LoginRepository {
       print("[LoginRepository] [doLogin] url: $url");
       var data = {
         'grant_type': 'password',
-        'email': email,
-        'password': password,
+        'email': email.value,
+        'password': password.value,
       };
       final response = await _dio.post(Uri.encodeFull(url), data: data);
       print("[LoginRepository] [doLogin] response: $response");
@@ -32,10 +34,7 @@ class LoginRepository {
       _saveTokens(login.accessToken.token, login.refreshToken.token);
       return login;
     } on DioError catch (e) {
-      if (e.response!.statusCode == 401) {
-        throw Exception('Email atau password salah');
-      }
-      throw Exception('Koneksi internet terputus');
+      throw e;
     }
   }
 
