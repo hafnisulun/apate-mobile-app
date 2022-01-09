@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Auth {
-  static void logout(BuildContext context) async {
+  static Future<bool> isLoggedIn() async {
+    String? accessToken = await LoginRepository().getAccessToken();
+    return accessToken != null;
+  }
+
+  static void logout(BuildContext context) {
     FlutterSecureStorage().deleteAll();
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(

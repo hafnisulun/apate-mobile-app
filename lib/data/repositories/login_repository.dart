@@ -9,6 +9,7 @@ import '../../constants.dart';
 
 class LoginRepository {
   Dio _dio = Dio();
+  FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<Login?> doLogin(Email email, Password password) async {
     try {
@@ -70,16 +71,15 @@ class LoginRepository {
   }
 
   Future<String?> getAccessToken() async {
-    return await FlutterSecureStorage().read(key: 'access_token');
+    return await _storage.read(key: 'access_token');
   }
 
   Future<String?> getRefreshToken() async {
-    return await FlutterSecureStorage().read(key: 'refresh_token');
+    return await _storage.read(key: 'refresh_token');
   }
 
   void _saveTokens(String accessToken, String refreshToken) async {
-    final storage = new FlutterSecureStorage();
-    await storage.write(key: 'access_token', value: accessToken);
-    await storage.write(key: 'refresh_token', value: refreshToken);
+    await _storage.write(key: 'access_token', value: accessToken);
+    await _storage.write(key: 'refresh_token', value: refreshToken);
   }
 }

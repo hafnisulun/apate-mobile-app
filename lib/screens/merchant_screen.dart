@@ -121,6 +121,10 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
                   background: FadeInImage.assetNetwork(
                     placeholder: "assets/images/no_image.png",
                     image: widget.merchant.image,
+                    imageErrorBuilder: (context, url, error) => Image.asset(
+                      'assets/images/no_image.png',
+                      fit: BoxFit.cover,
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -396,46 +400,44 @@ class _MerchantCartState extends State<MerchantCart> {
                 MaterialPageRoute(builder: (context) => CheckoutScreen()),
               ).then((value) => widget.updateCartCallback());
             },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  Text(
-                    "${Number.formatNumber(widget.totalItems)} item",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                    textAlign: TextAlign.start,
+            child: Row(
+              children: [
+                Text(
+                  "${Number.formatNumber(widget.totalItems)} item",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
                   ),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 8.0),
-                      padding: const EdgeInsets.only(left: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            color: Colors.white,
-                          ),
+                  textAlign: TextAlign.start,
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.only(left: 8.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        left: BorderSide(
+                          color: Colors.white,
                         ),
                       ),
-                      child: Text(
-                        "${Number.formatCurrency(widget.totalAmount)}",
-                        style: TextStyle(fontSize: 16.0),
-                        textAlign: TextAlign.start,
-                      ),
+                    ),
+                    child: Text(
+                      "${Number.formatCurrency(widget.totalAmount)}",
+                      style: TextStyle(fontSize: 16.0),
+                      textAlign: TextAlign.start,
                     ),
                   ),
-                  Icon(
-                    Icons.shopping_basket,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  Icons.shopping_basket,
+                  color: Colors.white,
+                ),
+              ],
             ),
             style: TextButton.styleFrom(
               primary: Colors.white,
               backgroundColor: Colors.green,
+              padding: const EdgeInsets.all(12.0),
             ),
           ),
         ),

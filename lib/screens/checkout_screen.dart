@@ -189,13 +189,12 @@ class CheckoutOrderButton extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: TextButton(
                 onPressed: () => _sendOrderMessage(context),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("PESAN", style: TextStyle(fontSize: 16.0)),
-                ),
+                child: Text("PESAN"),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: Colors.green,
+                  padding: const EdgeInsets.all(12.0),
+                  textStyle: TextStyle(fontSize: 16.0),
                 ),
               ),
             ),

@@ -131,6 +131,7 @@ class EmailInput extends StatelessWidget {
           labelText: 'Email',
         ),
         keyboardType: TextInputType.emailAddress,
+        textInputAction: TextInputAction.next,
         onChanged: (value) {
           context.read<LoginBloc>().add(EmailChanged(email: value));
         },
@@ -172,13 +173,11 @@ class SubmitButton extends StatelessWidget {
               onPressed: state.status.isValidated
                   ? () => context.read<LoginBloc>().add(FormSubmitted())
                   : null,
+              child: Text('MASUK'),
               style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(
-                  fontSize: 16.0,
-                ),
+                textStyle: TextStyle(fontSize: 16.0),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
-              child: Text('Masuk'),
             ),
           ),
         );
@@ -195,10 +194,10 @@ class ForgotPasswordButton extends StatelessWidget {
       child: TextButton(
         onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Forgot password'),
+            content: Text('Lupa password'),
           ),
         ),
-        child: Text('Forgot password?'),
+        child: Text('Lupa password?'),
       ),
     );
   }
@@ -211,14 +210,14 @@ class SignUpButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
-          Text("Don't have an account?"),
+          Text('Belum memiliki akun?'),
           TextButton(
             onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Sign up'),
+                content: Text('Daftar'),
               ),
             ),
-            child: Text('Sign up'),
+            child: Text('Daftar'),
           ),
         ],
       ),

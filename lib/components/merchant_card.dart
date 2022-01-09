@@ -44,6 +44,10 @@ class MerchantCard extends StatelessWidget {
                     child: FadeInImage.assetNetwork(
                       placeholder: "assets/images/no_image.png",
                       image: merchant.image,
+                      imageErrorBuilder: (context, url, error) => Image.asset(
+                        'assets/images/no_image.png',
+                        fit: BoxFit.fill,
+                      ),
                       fit: BoxFit.fill,
                     ),
                   ),
