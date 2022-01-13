@@ -1,5 +1,8 @@
 import 'package:apate/bloc/account/account_bloc.dart';
+import 'package:apate/bloc/addresses/addresses_bloc.dart';
+import 'package:apate/data/models/address.dart';
 import 'package:apate/data/repositories/account_repository.dart';
+import 'package:apate/data/repositories/addresses_repository.dart';
 import 'package:apate/utils/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,65 +30,91 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: BlocProvider(
-        create: (context) =>
-            AccountBloc(AccountRepository())..add(AccountFetchEvent()),
-        child: BlocBuilder<AccountBloc, AccountState>(
-          builder: (context, state) {
-            if (state is AccountFetchSuccess) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Item(
-                            field: 'Nama',
-                            value: state.account.name,
-                          ),
-                          Item(
-                            field: 'Email',
-                            value: state.account.email,
-                          ),
-                          Item(
-                            field: 'No. telp.',
-                            value: state.account.phone,
-                          ),
-                          Item(
-                            field: 'Jenis kelamin',
-                            value: state.account.gender,
-                          ),
-                          Addresses(),
-                        ],
-                      ),
-                    ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => AccountBloc(AccountRepository())
+                      ..add(AccountFetchEvent()),
                   ),
-                  LogOutButton(),
+                  BlocProvider(
+                    create: (context) => AddressesBloc(AddressesRepository())
+                      ..add(AddressesFetchEvent()),
+                  ),
                 ],
-              );
-            } else if (state is AccountFetchError) {
-              return Center(
-                child: Text("Error"),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
+                child: AccountView(),
+              ),
+            ),
+          ),
+          LogOutButton(),
+        ],
       ),
     );
   }
 }
 
-class Item extends StatelessWidget {
+class AccountView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BlocBuilder<AccountBloc, AccountState>(
+          builder: (context, state) {
+            if (state is AccountFetchSuccess) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FieldView(
+                    field: 'Nama',
+                    value: state.account.name,
+                  ),
+                  FieldView(
+                    field: 'Email',
+                    value: state.account.email,
+                  ),
+                  FieldView(
+                    field: 'No. telp.',
+                    value: state.account.phone,
+                  ),
+                  FieldView(
+                    field: 'Jenis kelamin',
+                    value: state.account.gender,
+                  ),
+                ],
+              );
+            } else {
+              return Text("Loading...");
+            }
+          },
+        ),
+        BlocBuilder<AddressesBloc, AddressesState>(
+          builder: (context, state) {
+            if (state is AddressesFetchSuccess) {
+              return AddressesView(
+                addresses: state.addresses,
+              );
+            } else if (state is AddressesFetchError) {
+              return Text("Error");
+            } else {
+              return Text("Loading...");
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class FieldView extends StatelessWidget {
   final String field;
   final String value;
 
-  Item({
+  FieldView({
     required this.field,
     required this.value,
   });
@@ -121,12 +150,18 @@ class Item extends StatelessWidget {
   }
 }
 
-class Addresses extends StatelessWidget {
+class AddressesView extends StatelessWidget {
+  final List<Address> addresses;
+
+  AddressesView({
+    required this.addresses,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
@@ -138,37 +173,61 @@ class Addresses extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            'Label STR4',
-            style: TextStyle(
-              fontSize: 16.0,
-              height: 1.5,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            'Cluster STR',
-            style: TextStyle(
-              fontSize: 16.0,
-              height: 1.5,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0),
-          child: Text(
-            'Details Unit H1023A',
-            style: TextStyle(
-              fontSize: 16.0,
-              height: 1.5,
-            ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(
+            this.addresses.length,
+            (index) {
+              return AddressView(address: addresses[index]);
+            },
           ),
         ),
       ],
+    );
+  }
+}
+
+class AddressView extends StatelessWidget {
+  final Address address;
+
+  AddressView({
+    required this.address,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(8.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Text(
+              this.address.label,
+              style: TextStyle(
+                fontSize: 16.0,
+                height: 1.5,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Text(
+              this.address.details,
+              style: TextStyle(
+                fontSize: 16.0,
+                height: 1.5,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
