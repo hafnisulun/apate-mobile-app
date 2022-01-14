@@ -34,15 +34,23 @@ class _ShopScreenState extends State<ShopScreen> {
 class ShopView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DestinationView(),
-          MerchantGridView(),
-        ],
-      ),
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                DestinationView(),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(16),
+          sliver: MerchantGridView(),
+        ),
+      ],
     );
   }
 }
@@ -50,20 +58,17 @@ class ShopView extends StatelessWidget {
 class DestinationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 16),
-      child: Row(
-        children: [
-          Text(
-            'Antar ke: ',
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          Text(
-            'STR 1 | Unit O1520C',
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-        ],
-      ),
+    return Row(
+      children: <Widget>[
+        Text(
+          'Antar ke: ',
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+        Text(
+          'STR 1 | Unit O1520C',
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+      ],
     );
   }
 }
@@ -74,44 +79,60 @@ class MerchantGridView extends StatelessWidget {
     return BlocBuilder<MerchantsBloc, MerchantsState>(
       builder: (context, state) {
         if (state is MerchantsFetchSuccess) {
-          return Expanded(
-            child: GridView.count(
+          return SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
               childAspectRatio: 0.77,
-              children: [
+            ),
+            delegate: SliverChildListDelegate(
+              [
                 ...List.generate(
                     state.merchants.data.length,
                     (index) =>
-                        MerchantCard(merchant: state.merchants.data[index]))
+                        MerchantCard(merchant: state.merchants.data[index])),
               ],
             ),
           );
         } else if (state is MerchantsFetchError) {
-          return Center(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Koneksi internet terputus"),
-                  SizedBox(height: 8.0),
-                  TextButton(
-                    onPressed: () =>
-                        context.read<MerchantsBloc>().add(LoadMerchantsEvent()),
-                    child: Text("COBA LAGI"),
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
+          return SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Koneksi internet terputus"),
+                        SizedBox(height: 8.0),
+                        TextButton(
+                          onPressed: () => context
+                              .read<MerchantsBloc>()
+                              .add(LoadMerchantsEvent()),
+                          child: Text("COBA LAGI"),
+                          style: TextButton.styleFrom(
+                            primary: Colors.white,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
           );
         } else {
-          return Center(
-            child: CircularProgressIndicator(),
+          return SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(
+                  child: CircularProgressIndicator(),
+                )
+              ],
+            ),
           );
         }
       },

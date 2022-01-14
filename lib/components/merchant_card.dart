@@ -21,57 +21,54 @@ class MerchantCard extends StatelessWidget {
           screen: MerchantScreen(merchant: merchant),
         );
       },
-      child: SizedBox(
-        width: width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.grey,
-                ),
-              ),
-              child: Column(
-                children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
-                    ),
-                    child: FadeInImage.assetNetwork(
-                      placeholder: "assets/images/no_image.png",
-                      image: merchant.image,
-                      imageErrorBuilder: (context, url, error) => Image.asset(
-                        'assets/images/no_image.png',
-                        fit: BoxFit.fill,
-                      ),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 54,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          merchant.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.grey,
               ),
             ),
-          ],
-        ),
+            child: Column(
+              children: <Widget>[
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                  child: FadeInImage.assetNetwork(
+                    placeholder: "assets/images/no_image.png",
+                    image: merchant.image,
+                    imageErrorBuilder: (context, url, error) => Image.asset(
+                      'assets/images/no_image.png',
+                      fit: BoxFit.fill,
+                    ),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                SizedBox(
+                  height: 54,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        merchant.name,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
