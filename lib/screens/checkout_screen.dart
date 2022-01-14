@@ -192,7 +192,7 @@ class CheckoutOrderButton extends StatelessWidget {
                 child: Text("PESAN"),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
                   padding: const EdgeInsets.all(12.0),
                   textStyle: TextStyle(fontSize: 16.0),
                 ),

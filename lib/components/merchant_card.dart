@@ -25,7 +25,7 @@ class MerchantCard extends StatelessWidget {
         width: width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          children: <Widget>[
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -35,7 +35,7 @@ class MerchantCard extends StatelessWidget {
                 ),
               ),
               child: Column(
-                children: [
+                children: <Widget>[
                   ClipRRect(
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(8),
@@ -62,10 +62,7 @@ class MerchantCard extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.bodyText1,
                         ),
                       ),
                     ),

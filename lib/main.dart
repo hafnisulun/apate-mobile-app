@@ -15,9 +15,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: Env.APP_NAME,
         theme: ThemeData(
-          primarySwatch: Colors.green,
+          primarySwatch: Colors.blue,
           scaffoldBackgroundColor: Colors.white,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: const TextTheme(
+            bodyText1: TextStyle(fontSize: 16.0),
+            bodyText2: TextStyle(fontSize: 15.0),
+            caption: TextStyle(fontSize: 14.0),
+          ),
         ),
         home: FutureBuilder<bool>(
           future: Auth.isLoggedIn(),

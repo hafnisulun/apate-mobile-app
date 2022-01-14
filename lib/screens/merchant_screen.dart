@@ -54,7 +54,7 @@ class _MerchantBodyState extends State<MerchantBody> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
+      children: <Widget>[
         BlocProvider(
           create: (context) => ProductsBloc(ProductsRepository())
             ..add(ProductsFetchEvent(widget.merchant.uuid)),
@@ -112,7 +112,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
       builder: (context, state) {
         if (state is ProductsFetchSuccess) {
           return CustomScrollView(
-            slivers: [
+            slivers: <Widget>[
               SliverAppBar(
                 expandedHeight: 192,
                 pinned: true,
@@ -238,7 +238,10 @@ class MerchantInfo extends StatelessWidget {
             children: [
               Icon(Icons.location_on_outlined),
               SizedBox(width: 8.0),
-              Text('${merchant.lat}, ${merchant.lon}'),
+              Text(
+                '${merchant.lat}, ${merchant.lon}',
+                style: Theme.of(context).textTheme.bodyText2,
+              ),
             ],
           ),
           SizedBox(height: 12.0),
@@ -250,114 +253,70 @@ class MerchantInfo extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Sunday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Sunday",
+                    hours: "09:00 - 17:00",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Monday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Monday",
+                    hours: "09:00 - 17:00",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Wednesday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Tuesday",
+                    hours: "09:00 - 17:00",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Thursday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Wednesday",
+                    hours: "09:00 - 17:00",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Wednesday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Thursday",
+                    hours: "09:00 - 17:00",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Friday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("Closed"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Friday",
+                    hours: "Closed",
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 100.0,
-                          child: Text(
-                            "Saturday",
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text("09:00 - 17:00"),
-                      ],
-                    ),
+                  MerchantScheduleRow(
+                    day: "Saturday",
+                    hours: "09:00 - 17:00",
                   ),
                 ],
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MerchantScheduleRow extends StatelessWidget {
+  final String day;
+  final String hours;
+
+  MerchantScheduleRow({
+    required this.day,
+    required this.hours,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+      child: Row(
+        children: [
+          Container(
+            width: 100.0,
+            child: Text(
+              this.day,
+              style: Theme.of(context).textTheme.bodyText2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            this.hours,
+            style: Theme.of(context).textTheme.bodyText2,
           ),
         ],
       ),
@@ -436,7 +395,7 @@ class _MerchantCartState extends State<MerchantCart> {
             ),
             style: TextButton.styleFrom(
               primary: Colors.white,
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.all(12.0),
             ),
           ),

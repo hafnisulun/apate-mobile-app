@@ -32,7 +32,7 @@ class ProductCard extends StatelessWidget {
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Image.asset(
             product.image ?? "assets/images/no_image.png",
             height: 64,
@@ -50,10 +50,7 @@ class ProductCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         product.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.bodyText1,
                       ),
                     ),
                     SizedBox(
@@ -61,9 +58,7 @@ class ProductCard extends StatelessWidget {
                     ),
                     Text(
                       Number.formatCurrency(product.price),
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
+                      style: Theme.of(context).textTheme.bodyText2,
                     ),
                   ],
                 ),
@@ -72,9 +67,7 @@ class ProductCard extends StatelessWidget {
                 ),
                 Text(
                   product.description ?? "",
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
+                  style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(
                   height: 4,
@@ -132,8 +125,11 @@ class ActionButtons extends StatelessWidget {
       builder: (context, state) {
         if (state is CartItemFetchSuccess) {
           if (state.item != null && state.item!.productQty > 0) {
-            return _buildRemoveAndAddButtons(
-                state.item!, context.watch<CartItemBloc>());
+            return RemoveAndAddButtons(
+              cartItem: state.item!,
+              cartItemBloc: context.watch<CartItemBloc>(),
+              onCartItemUpdated: onCartItemUpdated,
+            );
           } else {
             final CartItem cartItem = CartItem(
               merchantId: merchantId,
@@ -142,46 +138,73 @@ class ActionButtons extends StatelessWidget {
               productPrice: product.price,
               productQty: 0,
             );
-            return _buildAddButton(cartItem, context.watch<CartItemBloc>());
+            return AddButton(
+              cartItem: cartItem,
+              cartItemBloc: context.watch<CartItemBloc>(),
+              onCartItemUpdated: onCartItemUpdated,
+            );
           }
         }
         return Container();
       },
     );
   }
+}
 
-  Widget _buildAddButton(CartItem cartItem, CartItemBloc cartItemCubit) {
+class AddButton extends StatelessWidget {
+  final CartItem cartItem;
+  final CartItemBloc cartItemBloc;
+  final Function onCartItemUpdated;
+
+  AddButton({
+    required this.cartItem,
+    required this.cartItemBloc,
+    required this.onCartItemUpdated,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
         cartItem.productQty++;
-        onCartItemUpdated(cartItem, cartItemCubit);
+        onCartItemUpdated(cartItem, cartItemBloc);
       },
       child: Text("TAMBAH"),
       style: TextButton.styleFrom(
         primary: Colors.white,
-        backgroundColor: Colors.green,
+        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
   }
+}
 
-  Widget _buildRemoveAndAddButtons(
-    CartItem cartItem,
-    CartItemBloc cartItemCubit,
-  ) {
+class RemoveAndAddButtons extends StatelessWidget {
+  final CartItem cartItem;
+  final CartItemBloc cartItemBloc;
+  final Function onCartItemUpdated;
+
+  RemoveAndAddButtons({
+    required this.cartItem,
+    required this.cartItemBloc,
+    required this.onCartItemUpdated,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
-      children: [
+      children: <Widget>[
         SizedBox(
           width: 36.0,
           child: TextButton(
             child: Icon(Icons.remove),
             onPressed: () {
               cartItem.productQty--;
-              onCartItemUpdated(cartItem, cartItemCubit);
+              onCartItemUpdated(cartItem, cartItemBloc);
             },
             style: TextButton.styleFrom(
               primary: Colors.white,
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               padding: EdgeInsets.zero,
               shape: CircleBorder(),
             ),
@@ -189,10 +212,7 @@ class ActionButtons extends StatelessWidget {
         ),
         Container(
           width: 44.0,
-          padding: EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
             cartItem.productQty.toString(),
             textAlign: TextAlign.center,
@@ -205,11 +225,11 @@ class ActionButtons extends StatelessWidget {
             child: Icon(Icons.add),
             onPressed: () {
               cartItem.productQty++;
-              onCartItemUpdated(cartItem, cartItemCubit);
+              onCartItemUpdated(cartItem, cartItemBloc);
             },
             style: TextButton.styleFrom(
               primary: Colors.white,
-              backgroundColor: Colors.green,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               padding: EdgeInsets.zero,
               shape: CircleBorder(),
             ),

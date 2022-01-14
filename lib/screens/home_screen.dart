@@ -57,19 +57,19 @@ class _HomeScreenState extends State<HomeScreen> {
       PersistentBottomNavBarItem(
         icon: Icon(Icons.shopping_basket),
         title: "Belanja",
-        activeColorPrimary: Colors.green,
+        activeColorPrimary: Theme.of(context).colorScheme.primary,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.notifications),
         title: ("Notifikasi"),
-        activeColorPrimary: Colors.green,
+        activeColorPrimary: Theme.of(context).colorScheme.primary,
         inactiveColorPrimary: Colors.grey,
       ),
       PersistentBottomNavBarItem(
         icon: Icon(Icons.person),
         title: ("Akun"),
-        activeColorPrimary: Colors.green,
+        activeColorPrimary: Theme.of(context).colorScheme.primary,
         inactiveColorPrimary: Colors.grey,
       ),
     ];

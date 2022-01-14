@@ -65,7 +65,7 @@ class LoginView extends StatelessWidget {
                             child: Center(
                               child: Image(
                                 image: AssetImage(
-                                    'assets/images/apate_a_green_logo.png'),
+                                    'assets/images/apate_a_blue_logo.png'),
                                 height: 128,
                               ),
                             ),
