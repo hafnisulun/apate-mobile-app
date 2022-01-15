@@ -2,6 +2,7 @@ import 'package:apate/bloc/login/login_bloc.dart';
 import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
@@ -14,6 +15,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+      ),
       body: BlocProvider(
         create: (context) => LoginBloc(LoginRepository()),
         child: LoginView(),

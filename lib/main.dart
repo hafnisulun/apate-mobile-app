@@ -1,5 +1,6 @@
 import 'package:apate/env.dart';
 import 'package:apate/screens/home_screen.dart';
+import 'package:apate/screens/launch_screen.dart';
 import 'package:apate/screens/login_screen.dart';
 import 'package:apate/utils/auth.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +29,10 @@ class MyApp extends StatelessWidget {
           future: Auth.isLoggedIn(),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: Text('Loading...'));
+              return LaunchScreen();
             } else {
               if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                return LaunchScreen(error: snapshot.error.toString());
               } else {
                 return snapshot.data! ? HomeScreen() : LoginScreen();
               }
