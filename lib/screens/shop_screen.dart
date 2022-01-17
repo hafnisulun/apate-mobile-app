@@ -1,20 +1,12 @@
+import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/bloc/merchants_bloc.dart';
 import 'package:apate/components/merchant_card.dart';
+import 'package:apate/data/repositories/addresses_repository.dart';
 import 'package:apate/data/repositories/merchants_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ShopScreen extends StatefulWidget {
-  @override
-  _ShopScreenState createState() => _ShopScreenState();
-}
-
-class _ShopScreenState extends State<ShopScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class ShopScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,35 +14,43 @@ class _ShopScreenState extends State<ShopScreen> {
         title: Text("Belanja"),
         automaticallyImplyLeading: true,
       ),
-      body: BlocProvider(
-        create: (context) =>
-            MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
-        child: ShopView(),
-      ),
+      body: ShopBody(),
     );
   }
 }
 
-class ShopView extends StatelessWidget {
+class ShopBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverPadding(
-          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                DestinationView(),
-              ],
-            ),
-          ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              AddressesBloc(AddressesRepository())..add(AddressesFetchEvent()),
         ),
-        SliverPadding(
-          padding: EdgeInsets.all(16),
-          sliver: MerchantGridView(),
+        BlocProvider(
+          create: (context) =>
+              MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
         ),
       ],
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  DestinationView(),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: EdgeInsets.all(16),
+            sliver: MerchantGridView(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -58,15 +58,26 @@ class ShopView extends StatelessWidget {
 class DestinationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           'Antar ke: ',
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.caption,
         ),
-        Text(
-          'STR 1 | Unit O1520C',
-          style: Theme.of(context).textTheme.bodyText1,
+        BlocBuilder<AddressesBloc, AddressesState>(
+          builder: (context, state) {
+            if (state is AddressesFetchSuccess) {
+              return Text(
+                state.addresses[0].label + ', ' + state.addresses[0].details,
+                style: Theme.of(context).textTheme.bodyText1,
+              );
+            } else if (state is AddressesFetchError) {
+              return Text('Error');
+            } else {
+              return Text('Loading...');
+            }
+          },
         ),
       ],
     );
@@ -90,7 +101,7 @@ class MerchantGridView extends StatelessWidget {
               [
                 ...List.generate(
                     state.merchants.data.length,
-                    (index) =>
+                        (index) =>
                         MerchantCard(merchant: state.merchants.data[index])),
               ],
             ),
@@ -114,7 +125,7 @@ class MerchantGridView extends StatelessWidget {
                           style: TextButton.styleFrom(
                             primary: Colors.white,
                             backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                            Theme.of(context).colorScheme.primary,
                           ),
                         )
                       ],
