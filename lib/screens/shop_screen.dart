@@ -22,34 +22,36 @@ class ShopScreen extends StatelessWidget {
 class ShopBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              AddressesBloc(AddressesRepository())..add(AddressesFetchEvent()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
-        ),
-      ],
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverPadding(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  DestinationView(),
-                ],
-              ),
-            ),
+    return SafeArea(
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AddressesBloc(AddressesRepository())
+              ..add(AddressesFetchEvent()),
           ),
-          SliverPadding(
-            padding: EdgeInsets.all(16),
-            sliver: MerchantGridView(),
+          BlocProvider(
+            create: (context) =>
+                MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
           ),
         ],
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverPadding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    DestinationView(),
+                  ],
+                ),
+              ),
+            ),
+            SliverPadding(
+              padding: EdgeInsets.all(16),
+              sliver: MerchantGridView(),
+            ),
+          ],
+        ),
       ),
     );
   }
