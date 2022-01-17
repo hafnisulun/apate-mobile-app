@@ -15,17 +15,12 @@ class AccountScreen extends StatelessWidget {
         title: Text('Akun'),
         automaticallyImplyLeading: true,
       ),
-      body: Body(),
+      body: AccountBody(),
     );
   }
 }
 
-class Body extends StatefulWidget {
-  @override
-  State<Body> createState() => _BodyState();
-}
-
-class _BodyState extends State<Body> {
+class AccountBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,7 +41,7 @@ class _BodyState extends State<Body> {
                       ..add(AddressesFetchEvent()),
                   ),
                 ],
-                child: AccountView(),
+                child: AccountDetailsView(),
               ),
             ),
           ),
@@ -57,7 +52,7 @@ class _BodyState extends State<Body> {
   }
 }
 
-class AccountView extends StatelessWidget {
+class AccountDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -69,19 +64,19 @@ class AccountView extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FieldView(
+                  AccountFieldView(
                     field: 'Nama',
                     value: state.account.name,
                   ),
-                  FieldView(
+                  AccountFieldView(
                     field: 'Email',
                     value: state.account.email,
                   ),
-                  FieldView(
+                  AccountFieldView(
                     field: 'No. telp.',
                     value: state.account.phone,
                   ),
-                  FieldView(
+                  AccountFieldView(
                     field: 'Jenis kelamin',
                     value: state.account.gender,
                   ),
@@ -110,11 +105,11 @@ class AccountView extends StatelessWidget {
   }
 }
 
-class FieldView extends StatelessWidget {
+class AccountFieldView extends StatelessWidget {
   final String field;
   final String value;
 
-  FieldView({
+  AccountFieldView({
     required this.field,
     required this.value,
   });
@@ -241,7 +236,8 @@ class LogOutButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 24.0),
         child: OutlinedButton(
-          onPressed: () => Auth.logout(context),
+          onPressed: () => _showAlertDialog(
+              context, 'Keluar dari Apate?', 'Apakah Anda yakin ingin keluar?'),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
@@ -255,6 +251,39 @@ class LogOutButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _showAlertDialog(
+    BuildContext context,
+    String title,
+    String message,
+  ) async {
+    return await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("BATAL"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text("KELUAR"),
+              onPressed: () => Auth.logout(context),
+            ),
+          ],
+        );
+      },
     );
   }
 }
