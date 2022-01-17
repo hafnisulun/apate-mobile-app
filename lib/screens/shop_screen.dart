@@ -101,7 +101,7 @@ class MerchantGridView extends StatelessWidget {
               [
                 ...List.generate(
                     state.merchants.data.length,
-                        (index) =>
+                    (index) =>
                         MerchantCard(merchant: state.merchants.data[index])),
               ],
             ),
@@ -125,7 +125,7 @@ class MerchantGridView extends StatelessWidget {
                           style: TextButton.styleFrom(
                             primary: Colors.white,
                             backgroundColor:
-                            Theme.of(context).colorScheme.primary,
+                                Theme.of(context).colorScheme.primary,
                           ),
                         )
                       ],
