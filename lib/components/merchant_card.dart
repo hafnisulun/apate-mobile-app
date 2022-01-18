@@ -35,10 +35,7 @@ class MerchantCard extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
                   child: FadeInImage.assetNetwork(
                     placeholder: "assets/images/no_image.png",
                     image: merchant.image,

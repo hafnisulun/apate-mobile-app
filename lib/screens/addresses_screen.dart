@@ -1,8 +1,10 @@
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/data/models/address.dart';
 import 'package:apate/data/repositories/addresses_repository.dart';
+import 'package:apate/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class AddressesScreen extends StatelessWidget {
   @override
@@ -15,20 +17,12 @@ class AddressesScreen extends StatelessWidget {
           Padding(
               padding: EdgeInsets.only(right: 16),
               child: GestureDetector(
-                onTap: () => _addAddress(context),
+                onTap: () => pushNewScreen(context, screen: AddressScreen()),
                 child: Icon(Icons.add),
               )),
         ],
       ),
       body: AddressesBody(),
-    );
-  }
-
-  void _addAddress(BuildContext context) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Tambah alamat'),
-      ),
     );
   }
 }
@@ -97,13 +91,16 @@ class AddressView extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Stack(
         children: <Widget>[
           Positioned(
             right: 4,
+            top: 0,
             child: IconButton(
-              onPressed: () => {},
+              onPressed: () => pushNewScreen(context,
+                  screen: AddressScreen(address: address)),
               icon: Icon(Icons.edit),
             ),
           ),

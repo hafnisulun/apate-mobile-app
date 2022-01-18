@@ -1,4 +1,5 @@
 import 'package:apate/bloc/login/login_bloc.dart';
+import 'package:apate/components/apt_flat_button.dart';
 import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,7 @@ class LoginView extends StatelessWidget {
                                   ),
                                   child: Divider(color: Colors.grey),
                                 ),
-                                SignUpButton(),
+                                SignUpView(),
                               ],
                             ),
                           ),
@@ -120,7 +121,7 @@ class LoginForm extends StatelessWidget {
         children: [
           EmailInput(),
           PasswordInput(),
-          SubmitButton(),
+          LogInButton(),
         ],
       ),
     );
@@ -166,7 +167,7 @@ class PasswordInput extends StatelessWidget {
   }
 }
 
-class SubmitButton extends StatelessWidget {
+class LogInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
@@ -176,15 +177,11 @@ class SubmitButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: AptFlatButton(
               onPressed: state.status.isValidated
                   ? () => context.read<LoginBloc>().add(FormSubmitted())
                   : null,
-              child: Text('MASUK'),
-              style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(fontSize: 16.0),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
+              text: 'MASUK',
             ),
           ),
         );
@@ -210,7 +207,7 @@ class ForgotPasswordButton extends StatelessWidget {
   }
 }
 
-class SignUpButton extends StatelessWidget {
+class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(

@@ -26,7 +26,7 @@ class ProductCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: Colors.grey[300]!,
+            color: Colors.grey.shade300,
           ),
         ),
       ),
@@ -43,7 +43,7 @@ class ProductCard extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -66,7 +66,7 @@ class ProductCard extends StatelessWidget {
                   height: 4,
                 ),
                 Text(
-                  product.description ?? "",
+                  product.description ?? '',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 SizedBox(
@@ -195,7 +195,7 @@ class RemoveAndAddButtons extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         SizedBox(
-          width: 36.0,
+          width: 36,
           child: TextButton(
             child: Icon(Icons.remove),
             onPressed: () {
@@ -211,8 +211,8 @@ class RemoveAndAddButtons extends StatelessWidget {
           ),
         ),
         Container(
-          width: 44.0,
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          width: 44,
+          padding: EdgeInsets.symmetric(horizontal: 8),
           child: Text(
             cartItem.productQty.toString(),
             textAlign: TextAlign.center,
@@ -220,7 +220,7 @@ class RemoveAndAddButtons extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: 36.0,
+          width: 36,
           child: TextButton(
             child: Icon(Icons.add),
             onPressed: () {

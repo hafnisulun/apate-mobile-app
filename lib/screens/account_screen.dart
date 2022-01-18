@@ -59,6 +59,7 @@ class AccountDetailsView extends StatelessWidget {
                 margin: EdgeInsets.only(top: 16),
                 padding: EdgeInsets.fromLTRB(8, 0, 8, 8),
                 decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey),
                 ),
                 child: Column(
@@ -83,8 +84,10 @@ class AccountDetailsView extends StatelessWidget {
                   ],
                 ),
               );
+            } else if (state is AccountFetchError) {
+              return Text('Error');
             } else {
-              return Text("Loading...");
+              return Text('Loading...');
             }
           },
         ),
@@ -141,6 +144,7 @@ class AddressesButton extends StatelessWidget {
       margin: const EdgeInsets.only(top: 16),
       width: double.infinity,
       child: InkWell(
+        borderRadius: BorderRadius.circular(4),
         onTap: () => pushNewScreen(
           context,
           screen: AddressesScreen(),
