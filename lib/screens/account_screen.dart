@@ -61,35 +61,24 @@ class AccountDetailsView extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                 ),
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      right: 4,
-                      child: IconButton(
-                        onPressed: () => {},
-                        icon: Icon(Icons.edit),
-                      ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AccountFieldView(
+                      field: 'Nama',
+                      value: state.account.name,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AccountFieldView(
-                          field: 'Nama',
-                          value: state.account.name,
-                        ),
-                        AccountFieldView(
-                          field: 'Email',
-                          value: state.account.email,
-                        ),
-                        AccountFieldView(
-                          field: 'No. telp.',
-                          value: state.account.phone,
-                        ),
-                        AccountFieldView(
-                          field: 'Jenis kelamin',
-                          value: state.account.gender,
-                        ),
-                      ],
+                    AccountFieldView(
+                      field: 'Email',
+                      value: state.account.email,
+                    ),
+                    AccountFieldView(
+                      field: 'No. telp.',
+                      value: state.account.phone,
+                    ),
+                    AccountFieldView(
+                      field: 'Jenis kelamin',
+                      value: state.account.gender,
                     ),
                   ],
                 ),
