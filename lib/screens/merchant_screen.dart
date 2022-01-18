@@ -118,14 +118,26 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(widget.merchant.name),
-                  background: FadeInImage.assetNetwork(
-                    placeholder: "assets/images/no_image.png",
-                    image: widget.merchant.image,
-                    imageErrorBuilder: (context, url, error) => Image.asset(
-                      'assets/images/no_image.png',
+                  background: DecoratedBox(
+                    position: DecorationPosition.foreground,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.center,
+                          colors: <Color>[
+                            Theme.of(context).colorScheme.primary,
+                            Colors.transparent,
+                          ]),
+                    ),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/images/no_image.png",
+                      image: widget.merchant.image,
+                      imageErrorBuilder: (context, url, error) => Image.asset(
+                        'assets/images/no_image.png',
+                        fit: BoxFit.cover,
+                      ),
                       fit: BoxFit.cover,
                     ),
-                    fit: BoxFit.cover,
                   ),
                 ),
               ),
