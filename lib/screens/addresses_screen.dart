@@ -30,24 +30,27 @@ class AddressesScreen extends StatelessWidget {
 class AddressesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-        child: BlocProvider(
-          create: (context) =>
-              AddressesBloc(AddressesRepository())..add(AddressesFetchEvent()),
-          child: BlocBuilder<AddressesBloc, AddressesState>(
-            builder: (context, state) {
-              if (state is AddressesFetchSuccess) {
-                return AddressesView(addresses: state.addresses);
-              } else if (state is AddressesFetchError) {
-                return Text('Error');
-              } else {
-                return Text('Loading...');
-              }
-            },
-          ),
-        ),
+    return BlocProvider(
+      create: (context) =>
+          AddressesBloc(AddressesRepository())..add(AddressesFetchEvent()),
+      child: BlocBuilder<AddressesBloc, AddressesState>(
+        builder: (context, state) {
+          if (state is AddressesFetchSuccess) {
+            return AddressesView(addresses: state.addresses);
+          } else if (state is AddressesFetchError) {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              alignment: Alignment.topCenter,
+              child: Text('Error'),
+            );
+          } else {
+            return Container(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              alignment: Alignment.topCenter,
+              child: Text('Loading...'),
+            );
+          }
+        },
       ),
     );
   }
@@ -64,11 +67,14 @@ class AddressesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) =>
-                AddressView(address: addresses[index]),
-            childCount: addresses.length,
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) =>
+                  AddressView(address: addresses[index]),
+              childCount: addresses.length,
+            ),
           ),
         ),
       ],

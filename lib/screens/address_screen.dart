@@ -44,58 +44,60 @@ class AddressBody extends StatelessWidget {
         }
         return clusterBloc;
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: BlocBuilder<ClusterBloc, ClusterState>(
-                builder: (context, state) {
-                  if (state is ClusterFetchSuccess) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AddressField(
-                          labelText: 'Label alamat',
-                          initialValue: address?.label,
-                        ),
-                        AddressField(
-                          labelText: 'Perumahan',
-                          initialValue: address?.cluster?.name,
-                          enabled: false,
-                        ),
-                        AddressField(
-                          labelText: 'Cluster',
-                          initialValue: state.cluster.name,
-                          enabled: false,
-                        ),
-                        AddressField(
-                          labelText: 'Detail alamat',
-                          initialValue: address?.details,
-                        ),
-                      ],
-                    );
-                  } else if (state is ClusterFetchError) {
-                    return Text('Error');
-                  } else if (state is ClusterFetchIdle) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        AddressField(labelText: 'Label alamat'),
-                        AddressField(labelText: 'Perumahan'),
-                        AddressField(labelText: 'Cluster'),
-                        AddressField(labelText: 'Detail alamat'),
-                      ],
-                    );
-                  } else {
-                    return Text('Loading...');
-                  }
-                },
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: BlocBuilder<ClusterBloc, ClusterState>(
+                  builder: (context, state) {
+                    if (state is ClusterFetchSuccess) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          AddressField(
+                            labelText: 'Label alamat',
+                            initialValue: address?.label,
+                          ),
+                          AddressField(
+                            labelText: 'Perumahan',
+                            initialValue: address?.cluster?.name,
+                            enabled: false,
+                          ),
+                          AddressField(
+                            labelText: 'Cluster',
+                            initialValue: state.cluster.name,
+                            enabled: false,
+                          ),
+                          AddressField(
+                            labelText: 'Detail alamat',
+                            initialValue: address?.details,
+                          ),
+                        ],
+                      );
+                    } else if (state is ClusterFetchError) {
+                      return Text('Error');
+                    } else if (state is ClusterFetchIdle) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AddressField(labelText: 'Label alamat'),
+                          AddressField(labelText: 'Perumahan'),
+                          AddressField(labelText: 'Cluster'),
+                          AddressField(labelText: 'Detail alamat'),
+                        ],
+                      );
+                    } else {
+                      return Text('Loading...');
+                    }
+                  },
+                ),
               ),
             ),
-            AddressSubmitButton(),
-          ],
-        ),
+          ),
+          AddressSubmitButton(),
+        ],
       ),
     );
   }
@@ -133,6 +135,7 @@ class AddressSubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.all(16),
       child: AptFlatButton(
           onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

@@ -1,4 +1,5 @@
 import 'package:apate/bloc/account/account_bloc.dart';
+import 'package:apate/components/apt_outlined_button.dart';
 import 'package:apate/data/repositories/account_repository.dart';
 import 'package:apate/screens/addresses_screen.dart';
 import 'package:apate/utils/auth.dart';
@@ -23,13 +24,13 @@ class AccountBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: BlocProvider(
                   create: (context) => AccountBloc(AccountRepository())
                     ..add(AccountFetchEvent()),
@@ -37,9 +38,9 @@ class AccountBody extends StatelessWidget {
                 ),
               ),
             ),
-            LogOutButton(),
-          ],
-        ),
+          ),
+          LogOutButton(),
+        ],
       ),
     );
   }
@@ -176,25 +177,13 @@ class AddressesButton extends StatelessWidget {
 class LogOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: OutlinedButton(
-          onPressed: () => _showLogoutDialog(context),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              'KELUAR',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: Colors.red),
-            primary: Colors.red,
-          ),
-        ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      child: AptOutlinedButton(
+        onPressed: () => _showLogoutDialog(context),
+        text: 'KELUAR',
+        color: Colors.red,
       ),
     );
   }
