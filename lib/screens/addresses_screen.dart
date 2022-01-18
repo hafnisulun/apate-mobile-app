@@ -68,14 +68,16 @@ class AddressesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(
-        this.addresses.length,
-        (index) {
-          return AddressView(address: addresses[index]);
-        },
-      ),
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) =>
+                AddressView(address: addresses[index]),
+            childCount: addresses.length,
+          ),
+        ),
+      ],
     );
   }
 }
