@@ -11,8 +11,12 @@ class Auth {
     return accessToken != null;
   }
 
-  static void logout(BuildContext context) {
-    FlutterSecureStorage().deleteAll();
+  static void logOut(BuildContext context) {
+    _clearStorage();
+    goToLogInPage(context);
+  }
+
+  static void goToLogInPage(BuildContext context) {
     Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
       MaterialPageRoute(
         builder: (BuildContext context) => LoginScreen(),
@@ -41,13 +45,18 @@ class Auth {
                   .resolve(await _dioRetry(dio, error.requestOptions));
             }
           } catch (e) {
-            print('[ProductsRepository] [getProducts] exception: $e');
+            print('[Auth] [getDioInterceptorsWrapper] exception: $e');
+            _clearStorage();
             return handler.next(error);
           }
         }
         return handler.next(error);
       },
     );
+  }
+
+  static void _clearStorage() {
+    FlutterSecureStorage().deleteAll();
   }
 
   static Future<Response<dynamic>> _dioRetry(

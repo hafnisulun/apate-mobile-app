@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:apate/data/models/email.dart';
 import 'package:apate/data/models/login.dart';
 import 'package:apate/data/models/password.dart';
@@ -8,16 +10,17 @@ import 'package:path/path.dart';
 import '../../constants.dart';
 
 class LoginRepository {
-  Dio _dio = Dio();
   FlutterSecureStorage _storage = FlutterSecureStorage();
 
   Future<Login?> doLogin(Email email, Password password) async {
+    Dio dio = Dio();
     try {
-      _dio.interceptors
+      dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
+        var credentials = "$API_CLIENT_ID:$API_CLIENT_SECRET";
+        Codec<String, String> stringToBase64 = utf8.fuse(base64);
         var customHeaders = {
-          "X-CLient-Id": API_CLIENT_ID,
-          "X-Client-Secret": API_CLIENT_SECRET,
+          'Authorization': 'Basic ' + stringToBase64.encode(credentials)
         };
         options.headers.addAll(customHeaders);
         return handler.next(options);
@@ -29,7 +32,7 @@ class LoginRepository {
         'email': email.value,
         'password': password.value,
       };
-      final response = await _dio.post(Uri.encodeFull(url), data: data);
+      final response = await dio.post(Uri.encodeFull(url), data: data);
       print("[LoginRepository] [doLogin] response: $response");
       var login = Login.fromJson(response.data);
       _saveTokens(login.accessToken.token, login.refreshToken.token);
@@ -40,12 +43,14 @@ class LoginRepository {
   }
 
   Future<Login?> refreshToken() async {
+    Dio dio = Dio();
     try {
-      _dio.interceptors
+      dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
+        var credentials = "$API_CLIENT_ID:$API_CLIENT_SECRET";
+        Codec<String, String> stringToBase64 = utf8.fuse(base64);
         var customHeaders = {
-          "X-CLient-Id": API_CLIENT_ID,
-          "X-Client-Secret": API_CLIENT_SECRET
+          'Authorization': 'Basic ' + stringToBase64.encode(credentials)
         };
         options.headers.addAll(customHeaders);
         return handler.next(options);
@@ -56,7 +61,7 @@ class LoginRepository {
         'grant_type': 'refresh_token',
         'refresh_token': await getRefreshToken(),
       };
-      final response = await _dio.post(Uri.encodeFull(url), data: data);
+      final response = await dio.post(Uri.encodeFull(url), data: data);
       print("[LoginRepository] [refreshToken] response: $response");
       var login = Login.fromJson(response.data);
       _saveTokens(login.accessToken.token, login.refreshToken.token);

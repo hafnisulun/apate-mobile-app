@@ -100,7 +100,7 @@ class _MerchantScrollViewState extends State<MerchantScrollView> {
     return BlocConsumer<ProductsBloc, ProductsState>(
       listener: (context, state) {
         if (state is ProductsFetchUnauthorized) {
-          Auth.logout(context);
+          Auth.logOut(context);
         } else if (state is ProductsFetchError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

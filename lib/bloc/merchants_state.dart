@@ -4,6 +4,11 @@ abstract class MerchantsState extends Equatable {
   const MerchantsState();
 }
 
+class MerchantsFetchUnauthorized extends MerchantsState {
+  @override
+  List<Object> get props => [];
+}
+
 class MerchantsFetchLoading extends MerchantsState {
   @override
   List<Object> get props => [];

@@ -1,7 +1,13 @@
 import 'package:apate/bloc/cluster/cluster_bloc.dart';
 import 'package:apate/components/apt_flat_button.dart';
 import 'package:apate/data/models/address.dart';
+import 'package:apate/data/models/cluster.dart';
+import 'package:apate/data/models/residence.dart';
 import 'package:apate/data/repositories/cluster_repository.dart';
+import 'package:apate/data/repositories/residences_repository.dart';
+import 'package:apate/data/responses/clusters_response.dart';
+import 'package:apate/data/responses/residences_response.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,8 +89,8 @@ class AddressBody extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AddressField(labelText: 'Label alamat'),
-                          AddressField(labelText: 'Perumahan'),
-                          AddressField(labelText: 'Cluster'),
+                          AddressResidenceField(),
+                          AddressClusterField(),
                           AddressField(labelText: 'Detail alamat'),
                         ],
                       );
@@ -98,6 +104,116 @@ class AddressBody extends StatelessWidget {
           ),
           AddressSubmitButton(),
         ],
+      ),
+    );
+  }
+}
+
+class AddressResidenceField extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: DropdownSearch<Residence>(
+        mode: Mode.MENU,
+        showSelectedItems: true,
+        selectedItem: Residence(uuid: '', name: 'Pilih perumahan'),
+        compareFn: (item, selectedItem) => item?.uuid == selectedItem?.uuid,
+        dropdownSearchDecoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Perumahan',
+          contentPadding: EdgeInsets.fromLTRB(12, 11, 0, 0),
+        ),
+        dropdownBuilder: _customDropdown,
+        popupItemBuilder: _customPopupItem,
+        onFind: (String? filter) async {
+          ResidencesResponse? res =
+              await ResidencesRepository().getResidences();
+          if (res != null) {
+            return res.data;
+          }
+          return List.empty();
+        },
+        onChanged: print,
+      ),
+    );
+  }
+
+  Widget _customDropdown(BuildContext context, Residence? item) {
+    if (item == null) {
+      return Container();
+    }
+
+    return Container(
+      child: ListTile(
+        contentPadding: EdgeInsets.all(0),
+        title: Text(item.name),
+      ),
+    );
+  }
+
+  Widget _customPopupItem(
+      BuildContext context, Residence? item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item?.name ?? ''),
+      ),
+    );
+  }
+}
+
+class AddressClusterField extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: DropdownSearch<Cluster>(
+        mode: Mode.MENU,
+        showSelectedItems: true,
+        selectedItem: Cluster(uuid: '', name: 'Pilih cluster'),
+        compareFn: (item, selectedItem) => item?.uuid == selectedItem?.uuid,
+        dropdownSearchDecoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Cluster',
+          contentPadding: EdgeInsets.fromLTRB(12, 11, 0, 0),
+        ),
+        dropdownBuilder: _customDropdown,
+        popupItemBuilder: _customPopupItem,
+        onFind: (String? filter) async {
+          ClustersResponse? res =
+              await ClusterRepository().getClusters('asdsds');
+          if (res != null) {
+            return res.data;
+          }
+          return List.empty();
+        },
+        onChanged: print,
+      ),
+    );
+  }
+
+  Widget _customDropdown(BuildContext context, Cluster? item) {
+    if (item == null) {
+      return Container();
+    }
+
+    return Container(
+      child: ListTile(
+        contentPadding: EdgeInsets.all(0),
+        title: Text(item.name),
+      ),
+    );
+  }
+
+  Widget _customPopupItem(
+      BuildContext context, Cluster? item, bool isSelected) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
+      child: ListTile(
+        selected: isSelected,
+        title: Text(item?.name ?? ''),
       ),
     );
   }

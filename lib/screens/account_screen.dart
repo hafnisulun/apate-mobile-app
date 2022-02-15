@@ -209,7 +209,7 @@ class LogOutButton extends StatelessWidget {
             ),
             TextButton(
               child: Text("KELUAR"),
-              onPressed: () => Auth.logout(context),
+              onPressed: () => Auth.logOut(context),
             ),
           ],
         );

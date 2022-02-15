@@ -1,6 +1,7 @@
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/bloc/merchants_bloc.dart';
 import 'package:apate/components/merchant_card.dart';
+import 'package:apate/components/session_expired_dialog.dart';
 import 'package:apate/data/repositories/addresses_repository.dart';
 import 'package:apate/data/repositories/merchants_repository.dart';
 import 'package:flutter/material.dart';
@@ -34,25 +35,32 @@ class ShopBody extends StatelessWidget {
                 MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
           ),
         ],
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    DestinationView(),
-                  ],
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding: EdgeInsets.all(16),
-              sliver: MerchantGridView(),
-            ),
-          ],
-        ),
+        child: ShopView(),
       ),
+    );
+  }
+}
+
+class ShopView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+          sliver: SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                DestinationView(),
+              ],
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.all(16),
+          sliver: MerchantGridView(),
+        ),
+      ],
     );
   }
 }
@@ -67,7 +75,16 @@ class DestinationView extends StatelessWidget {
           'Antar ke: ',
           style: Theme.of(context).textTheme.caption,
         ),
-        BlocBuilder<AddressesBloc, AddressesState>(
+        BlocConsumer<AddressesBloc, AddressesState>(
+          listener: (context, state) {
+            if (state is AddressesFetchUnauthorized) {
+              showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) => SessionExpiredDialog(),
+              );
+            }
+          },
           builder: (context, state) {
             if (state is AddressesFetchSuccess) {
               return Text(
@@ -89,7 +106,16 @@ class DestinationView extends StatelessWidget {
 class MerchantGridView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MerchantsBloc, MerchantsState>(
+    return BlocConsumer<MerchantsBloc, MerchantsState>(
+      listener: (context, state) {
+        if (state is MerchantsFetchUnauthorized) {
+          showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => SessionExpiredDialog(),
+          );
+        }
+      },
       builder: (context, state) {
         if (state is MerchantsFetchSuccess) {
           return SliverGrid(
