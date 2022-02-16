@@ -28,7 +28,7 @@ class ClusterRepository {
     Dio dio = Dio();
     try {
       dio.interceptors.add(Auth.getDioInterceptorsWrapper(dio));
-      String url = join(API_BASE_URL, 'residences', residenceUuid);
+      String url = join(API_BASE_URL, 'residences', residenceUuid, 'clusters');
       print('[ClusterRepository] [getClusters] url: $url');
       final response = await dio.get(Uri.encodeFull(url));
       print('[ClusterRepository] [getClusters] response: $response');

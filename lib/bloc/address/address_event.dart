@@ -7,17 +7,12 @@ abstract class AddressEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class AddressResidenceChangeEvent extends AddressEvent {
-  const AddressResidenceChangeEvent({
-    required this.residence,
-    required this.residenceInput,
-  });
-
+class AddressClustersFetchEvent extends AddressEvent {
   final Residence residence;
-  final String residenceInput;
 
-  @override
-  List<Object> get props => [residence];
+  const AddressClustersFetchEvent({
+    required this.residence,
+  });
 }
 
 class AddressSubmitEvent extends AddressEvent {}

@@ -1,8 +1,8 @@
 class Cluster {
-  String uuid;
-  String name;
+  final String uuid;
+  final String name;
 
-  Cluster({
+  const Cluster({
     required this.uuid,
     required this.name,
   });

@@ -1,32 +1,41 @@
 part of 'address_bloc.dart';
 
-class AddressState extends Equatable {
-  const AddressState({
-    this.residence = const Residence(name: '', uuid: ''),
-    this.residenceInput = const ResidenceInput.pure(),
-    this.status = FormzStatus.pure,
-    this.message = '',
-  });
+abstract class AddressState extends Equatable {
+  const AddressState();
+}
 
-  final Residence residence;
-  final ResidenceInput residenceInput;
-  final FormzStatus status;
-  final String message;
+class AddressIdle extends AddressState {
+  @override
+  List<Object> get props => [];
+}
 
-  AddressState copyWith({
-    Residence? residence,
-    ResidenceInput? residenceInput,
-    FormzStatus? status,
-    String? message,
-  }) {
-    return AddressState(
-      residence: residence ?? this.residence,
-      residenceInput: residenceInput ?? this.residenceInput,
-      status: status ?? this.status,
-      message: message ?? this.message,
-    );
-  }
+class AddressClustersFetchLoading extends AddressState {
+  @override
+  List<Object> get props => [];
+}
+
+class AddressClustersFetchSuccess extends AddressState {
+  final List<Cluster> clusters;
+
+  const AddressClustersFetchSuccess({required this.clusters});
 
   @override
-  List<Object> get props => [residence, residenceInput, status, message];
+  List<Object> get props => [];
+}
+
+class AddressClustersFetchError extends AddressState {
+  final String message;
+
+  const AddressClustersFetchError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+
+  @override
+  String toString() => 'AddressClustersFetchError { message: $message }';
+}
+
+class AddressClustersFetchUnauthorized extends AddressState {
+  @override
+  List<Object> get props => [];
 }

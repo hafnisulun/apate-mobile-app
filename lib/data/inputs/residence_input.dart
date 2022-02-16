@@ -9,6 +9,7 @@ class ResidenceInput extends FormzInput<String, ResidenceValidationError> {
 
   @override
   ResidenceValidationError? validator(String? value) {
+    print("[validator] value: $value");
     return value != null && value.isNotEmpty && value.length >= 3
         ? null
         : ResidenceValidationError.invalid;

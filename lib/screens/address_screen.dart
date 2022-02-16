@@ -1,3 +1,5 @@
+import 'package:apate/bloc/address/address_bloc.dart';
+import 'package:apate/bloc/address_form/address_form_bloc.dart';
 import 'package:apate/bloc/cluster/cluster_bloc.dart';
 import 'package:apate/components/apt_flat_button.dart';
 import 'package:apate/data/models/address.dart';
@@ -5,11 +7,11 @@ import 'package:apate/data/models/cluster.dart';
 import 'package:apate/data/models/residence.dart';
 import 'package:apate/data/repositories/cluster_repository.dart';
 import 'package:apate/data/repositories/residences_repository.dart';
-import 'package:apate/data/responses/clusters_response.dart';
 import 'package:apate/data/responses/residences_response.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class AddressScreen extends StatelessWidget {
   final Address? address;
@@ -39,17 +41,32 @@ class AddressBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        ClusterBloc clusterBloc = ClusterBloc(ClusterRepository());
-        if (address?.residenceUuid != null && address?.clusterUuid != null) {
-          clusterBloc.add(ClusterFetchEvent(
-            residenceUuid: address?.residenceUuid,
-            clusterUuid: address?.clusterUuid,
-          ));
-        }
-        return clusterBloc;
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            return AddressFormBloc();
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            return AddressBloc(ClusterRepository());
+          },
+        ),
+        BlocProvider(
+          create: (context) {
+            ClusterBloc clusterBloc = ClusterBloc(ClusterRepository());
+            if (address?.residenceUuid != null &&
+                address?.clusterUuid != null) {
+              clusterBloc.add(ClusterFetchEvent(
+                residenceUuid: address?.residenceUuid,
+                clusterUuid: address?.clusterUuid,
+              ));
+            }
+            return clusterBloc;
+          },
+        ),
+      ],
       child: Column(
         children: <Widget>[
           Expanded(
@@ -134,7 +151,15 @@ class AddressResidenceField extends StatelessWidget {
           }
           return List.empty();
         },
-        onChanged: print,
+        onChanged: (Residence? residence) {
+          if (residence != null) {
+            context.read<AddressFormBloc>().add(
+                AddressFormResidenceChangeEvent(residenceUuid: residence.uuid));
+            context
+                .read<AddressBloc>()
+                .add(AddressClustersFetchEvent(residence: residence));
+          }
+        },
       ),
     );
   }
@@ -152,8 +177,7 @@ class AddressResidenceField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(
-      BuildContext context, Residence? item, bool isSelected) {
+  Widget _customPopupItem(BuildContext context, Residence? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -169,27 +193,29 @@ class AddressClusterField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: DropdownSearch<Cluster>(
-        mode: Mode.MENU,
-        showSelectedItems: true,
-        selectedItem: Cluster(uuid: '', name: 'Pilih cluster'),
-        compareFn: (item, selectedItem) => item?.uuid == selectedItem?.uuid,
-        dropdownSearchDecoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Cluster',
-          contentPadding: EdgeInsets.fromLTRB(12, 11, 0, 0),
-        ),
-        dropdownBuilder: _customDropdown,
-        popupItemBuilder: _customPopupItem,
-        onFind: (String? filter) async {
-          ClustersResponse? res =
-              await ClusterRepository().getClusters('asdsds');
-          if (res != null) {
-            return res.data;
-          }
-          return List.empty();
+      child: BlocBuilder<AddressBloc, AddressState>(
+        builder: (context, state) {
+          return DropdownSearch<Cluster>(
+            mode: Mode.MENU,
+            items: state is AddressClustersFetchSuccess ? state.clusters : [],
+            showSelectedItems: true,
+            selectedItem: Cluster(uuid: '', name: 'Pilih cluster'),
+            compareFn: (item, selectedItem) => item?.uuid == selectedItem?.uuid,
+            dropdownSearchDecoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Cluster',
+              contentPadding: EdgeInsets.fromLTRB(12, 11, 0, 0),
+            ),
+            dropdownBuilder: _customDropdown,
+            popupItemBuilder: _customPopupItem,
+            onChanged: (Cluster? cluster) {
+              if (cluster != null) {
+                context.read<AddressFormBloc>().add(
+                    AddressFormClusterChangeEvent(clusterUuid: cluster.uuid));
+              }
+            },
+          );
         },
-        onChanged: print,
       ),
     );
   }
@@ -207,8 +233,7 @@ class AddressClusterField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(
-      BuildContext context, Cluster? item, bool isSelected) {
+  Widget _customPopupItem(BuildContext context, Cluster? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -249,16 +274,20 @@ class AddressField extends StatelessWidget {
 class AddressSubmitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      child: AptFlatButton(
-          onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Simpan alamat'),
-                ),
-              ),
-          text: 'SIMPAN'),
-    );
+    return BlocBuilder<AddressFormBloc, AddressFormState>(
+        buildWhen: (previous, current) => previous.status != current.status,
+        builder: (context, state) {
+          return Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(16),
+            child: AptFlatButton(
+                onPressed: state.status.isValidated
+                    ? () => context
+                        .read<AddressFormBloc>()
+                        .add(AddressFormSubmitEvent())
+                    : null,
+                text: 'SIMPAN'),
+          );
+        });
   }
 }
