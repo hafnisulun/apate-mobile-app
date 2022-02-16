@@ -6,14 +6,13 @@ import 'package:path/path.dart';
 import '../../constants.dart';
 
 class AddressesRepository {
-  Dio _dio = Dio();
-
   Future<AddressesResponse?> getAddresses() async {
+    Dio dio = Dio();
     try {
-      _dio.interceptors.add(Auth.getDioInterceptorsWrapper(_dio));
+      dio.interceptors.add(Auth.getDioInterceptorsWrapper(dio));
       String url = join(API_BASE_URL, 'users/me/addresses');
       print('[AddressRepository] [getAddresses] url: $url');
-      final response = await _dio.get(Uri.encodeFull(url));
+      final response = await dio.get(Uri.encodeFull(url));
       print('[AddressRepository] [getAddresses] response: $response');
       return AddressesResponse.fromJson(response.data);
     } on DioError catch (e) {

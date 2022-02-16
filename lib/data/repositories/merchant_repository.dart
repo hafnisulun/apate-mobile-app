@@ -5,9 +5,8 @@ import 'package:path/path.dart';
 import '../../constants.dart';
 
 class MerchantRepository {
-  Dio dio = Dio();
-
   Future<Merchant?> getMerchant(String id) async {
+    Dio dio = Dio();
     try {
       String idToken = 'abc123';
       dio.interceptors

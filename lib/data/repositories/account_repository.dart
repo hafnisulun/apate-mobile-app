@@ -6,14 +6,13 @@ import 'package:path/path.dart';
 import '../../constants.dart';
 
 class AccountRepository {
-  Dio _dio = Dio();
-
   Future<AccountResponse?> getAccount() async {
+    Dio dio = Dio();
     try {
-      _dio.interceptors.add(Auth.getDioInterceptorsWrapper(_dio));
+      dio.interceptors.add(Auth.getDioInterceptorsWrapper(dio));
       String url = join(API_BASE_URL, 'users', 'me');
       print('[AccountRepository] [getAccount] url: $url');
-      final response = await _dio.get(Uri.encodeFull(url));
+      final response = await dio.get(Uri.encodeFull(url));
       print('[AccountRepository] [getAccount] response: $response');
       return AccountResponse.fromJson(response.data);
     } on DioError catch (e) {
