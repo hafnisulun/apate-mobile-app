@@ -105,10 +105,10 @@ class AddressBody extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AddressField(labelText: 'Label alamat'),
+                          AddressLabelInput(),
                           AddressResidenceField(),
                           AddressClusterField(),
-                          AddressField(labelText: 'Detail alamat'),
+                          AddressDetailInput(),
                         ],
                       );
                     } else {
@@ -121,6 +121,54 @@ class AddressBody extends StatelessWidget {
           ),
           AddressSubmitButton(),
         ],
+      ),
+    );
+  }
+}
+
+class AddressField extends StatelessWidget {
+  final String labelText;
+  final String? initialValue;
+  final bool? enabled;
+
+  AddressField({
+    required this.labelText,
+    this.initialValue,
+    this.enabled,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: labelText,
+        ),
+        initialValue: initialValue,
+        enabled: enabled,
+      ),
+    );
+  }
+}
+
+class AddressLabelInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Label alamat',
+        ),
+        textInputAction: TextInputAction.next,
+        onChanged: (value) {
+          context
+              .read<AddressFormBloc>()
+              .add(AddressFormLabelChangeEvent(label: value));
+        },
       ),
     );
   }
@@ -177,7 +225,8 @@ class AddressResidenceField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(BuildContext context, Residence? item, bool isSelected) {
+  Widget _customPopupItem(
+      BuildContext context, Residence? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -233,7 +282,8 @@ class AddressClusterField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(BuildContext context, Cluster? item, bool isSelected) {
+  Widget _customPopupItem(
+      BuildContext context, Cluster? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -244,28 +294,21 @@ class AddressClusterField extends StatelessWidget {
   }
 }
 
-class AddressField extends StatelessWidget {
-  final String labelText;
-  final String? initialValue;
-  final bool? enabled;
-
-  AddressField({
-    required this.labelText,
-    this.initialValue,
-    this.enabled,
-  });
-
+class AddressDetailInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
+      child: TextField(
         decoration: InputDecoration(
           border: OutlineInputBorder(),
-          labelText: labelText,
+          labelText: 'Detail alamat',
         ),
-        initialValue: initialValue,
-        enabled: enabled,
+        onChanged: (value) {
+          context
+              .read<AddressFormBloc>()
+              .add(AddressFormDetailChangeEvent(detail: value));
+        },
       ),
     );
   }

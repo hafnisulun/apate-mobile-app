@@ -1,3 +1,5 @@
+import 'package:apate/data/inputs/address_detail_input.dart';
+import 'package:apate/data/inputs/address_label_input.dart';
 import 'package:apate/data/inputs/cluster_input.dart';
 import 'package:apate/data/inputs/residence_input.dart';
 import 'package:bloc/bloc.dart';
@@ -10,8 +12,10 @@ part 'address_form_state.dart';
 
 class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   AddressFormBloc() : super(AddressFormState()) {
+    on<AddressFormLabelChangeEvent>(_onAddressFormLabelChangeEvent);
     on<AddressFormResidenceChangeEvent>(_onAddressFormResidenceChangeEvent);
     on<AddressFormClusterChangeEvent>(_onAddressFormClusterChangeEvent);
+    on<AddressFormDetailChangeEvent>(_onAddressFormDetailChangeEvent);
     on<AddressFormSubmitEvent>(_onAddressSubmitEvent);
   }
 
@@ -19,6 +23,23 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   void onTransition(Transition<AddressFormEvent, AddressFormState> transition) {
     print(transition);
     super.onTransition(transition);
+  }
+
+  void _onAddressFormLabelChangeEvent(
+      AddressFormLabelChangeEvent event, Emitter<AddressFormState> emit) {
+    final labelInput = AddressLabelInput.dirty(event.label);
+    print(
+        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] labelInput.value: ${labelInput.value}');
+    emit(state.copyWith(
+      labelInput:
+          labelInput.valid ? labelInput : AddressLabelInput.pure(event.label),
+      status: Formz.validate([
+        labelInput,
+        state.residenceInput,
+        state.clusterInput,
+        state.detailInput,
+      ]),
+    ));
   }
 
   void _onAddressFormResidenceChangeEvent(
@@ -30,7 +51,12 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
       residenceInput: residenceInput.valid
           ? residenceInput
           : ResidenceInput.pure(event.residenceUuid),
-      status: Formz.validate([residenceInput, state.clusterInput]),
+      status: Formz.validate([
+        state.labelInput,
+        residenceInput,
+        state.clusterInput,
+        state.detailInput,
+      ]),
     ));
   }
 
@@ -43,7 +69,30 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
       clusterInput: clusterInput.valid
           ? clusterInput
           : ClusterInput.pure(event.clusterUuid),
-      status: Formz.validate([state.residenceInput, clusterInput]),
+      status: Formz.validate([
+        state.labelInput,
+        state.residenceInput,
+        clusterInput,
+        state.detailInput,
+      ]),
+    ));
+  }
+
+  void _onAddressFormDetailChangeEvent(
+      AddressFormDetailChangeEvent event, Emitter<AddressFormState> emit) {
+    final detailInput = AddressDetailInput.dirty(event.detail);
+    print(
+        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] detailInput.value: ${detailInput.value}');
+    emit(state.copyWith(
+      detailInput: detailInput.valid
+          ? detailInput
+          : AddressDetailInput.pure(event.detail),
+      status: Formz.validate([
+        state.labelInput,
+        state.residenceInput,
+        state.clusterInput,
+        detailInput,
+      ]),
     ));
   }
 
