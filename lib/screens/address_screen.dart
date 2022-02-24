@@ -67,60 +67,80 @@ class AddressBody extends StatelessWidget {
           },
         ),
       ],
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: BlocBuilder<ClusterBloc, ClusterState>(
-                  builder: (context, state) {
-                    if (state is ClusterFetchSuccess) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          AddressField(
-                            labelText: 'Label alamat',
-                            initialValue: address?.label,
-                          ),
-                          AddressField(
-                            labelText: 'Perumahan',
-                            initialValue: address?.cluster?.name,
-                            enabled: false,
-                          ),
-                          AddressField(
-                            labelText: 'Cluster',
-                            initialValue: state.cluster.name,
-                            enabled: false,
-                          ),
-                          AddressField(
-                            labelText: 'Detail alamat',
-                            initialValue: address?.details,
-                          ),
-                        ],
-                      );
-                    } else if (state is ClusterFetchError) {
-                      return Text('Error');
-                    } else if (state is ClusterFetchIdle) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AddressLabelInput(),
-                          AddressResidenceField(),
-                          AddressClusterField(),
-                          AddressDetailInput(),
-                        ],
-                      );
-                    } else {
-                      return Text('Loading...');
-                    }
-                  },
-                ),
+      child: BlocListener<AddressFormBloc, AddressFormState>(
+        listener: (context, state) {
+          if (state.status.isSubmissionSuccess) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            Navigator.of(context).pop();
+          } else if (state.status.isSubmissionFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
               ),
+            );
+          }
+        },
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: BlocBuilder<ClusterBloc, ClusterState>(
+                        builder: (context, state) {
+                          if (state is ClusterFetchSuccess) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                AddressField(
+                                  labelText: 'Label alamat',
+                                  initialValue: address?.label,
+                                ),
+                                AddressField(
+                                  labelText: 'Perumahan',
+                                  initialValue: address?.cluster?.name,
+                                  enabled: false,
+                                ),
+                                AddressField(
+                                  labelText: 'Cluster',
+                                  initialValue: state.cluster.name,
+                                  enabled: false,
+                                ),
+                                AddressField(
+                                  labelText: 'Detail alamat',
+                                  initialValue: address?.details,
+                                ),
+                              ],
+                            );
+                          } else if (state is ClusterFetchError) {
+                            return Text('Error');
+                          } else if (state is ClusterFetchIdle) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AddressLabelInput(),
+                                AddressResidenceField(),
+                                AddressClusterField(),
+                                AddressDetailInput(),
+                              ],
+                            );
+                          } else {
+                            return Text('Loading...');
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                AddressSubmitButton(),
+              ],
             ),
-          ),
-          AddressSubmitButton(),
-        ],
+            OpacityView(),
+            LoadingView(),
+          ],
+        ),
       ),
     );
   }
@@ -332,5 +352,50 @@ class AddressSubmitButton extends StatelessWidget {
                 text: 'SIMPAN'),
           );
         });
+  }
+}
+
+class OpacityView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddressFormBloc, AddressFormState>(
+        builder: (context, state) {
+      if (state.status.isSubmissionInProgress) {
+        return Opacity(
+          opacity: 0.7,
+          child: const ModalBarrier(
+            dismissible: false,
+            color: Colors.black,
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
+  }
+}
+
+class LoadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddressFormBloc, AddressFormState>(
+        builder: (context, state) {
+      if (state.status.isSubmissionInProgress) {
+        return Center(
+          child: AlertDialog(
+            content: new Row(
+              children: [
+                CircularProgressIndicator(),
+                Container(
+                    margin: EdgeInsets.only(left: 16),
+                    child: Text("Loading...")),
+              ],
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
+    });
   }
 }

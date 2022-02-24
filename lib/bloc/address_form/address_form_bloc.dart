@@ -1,8 +1,11 @@
-import 'package:apate/data/inputs/address_detail_input.dart';
+import 'package:apate/data/inputs/address_details_input.dart';
 import 'package:apate/data/inputs/address_label_input.dart';
 import 'package:apate/data/inputs/cluster_input.dart';
 import 'package:apate/data/inputs/residence_input.dart';
+import 'package:apate/data/models/address.dart';
+import 'package:apate/data/repositories/address_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
@@ -29,7 +32,7 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
       AddressFormLabelChangeEvent event, Emitter<AddressFormState> emit) {
     final labelInput = AddressLabelInput.dirty(event.label);
     print(
-        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] labelInput.value: ${labelInput.value}');
+        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] labelInput.value: +${labelInput.value}');
     emit(state.copyWith(
       labelInput:
           labelInput.valid ? labelInput : AddressLabelInput.pure(event.label),
@@ -80,13 +83,13 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
 
   void _onAddressFormDetailChangeEvent(
       AddressFormDetailChangeEvent event, Emitter<AddressFormState> emit) {
-    final detailInput = AddressDetailInput.dirty(event.detail);
+    final detailInput = AddressDetailsInput.dirty(event.detail);
     print(
         '[AddressFormBloc] [_onAddressFormLabelChangeEvent] detailInput.value: ${detailInput.value}');
     emit(state.copyWith(
       detailInput: detailInput.valid
           ? detailInput
-          : AddressDetailInput.pure(event.detail),
+          : AddressDetailsInput.pure(event.detail),
       status: Formz.validate([
         state.labelInput,
         state.residenceInput,
@@ -99,5 +102,54 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   void _onAddressSubmitEvent(
       AddressFormSubmitEvent event, Emitter<AddressFormState> emit) async {
     print('[AddressFormBloc] [_onAddressSubmitEvent] state: $state');
+    final labelInput = AddressLabelInput.dirty(state.labelInput.value);
+    final residenceInput = ResidenceInput.dirty(state.residenceInput.value);
+    final clusterInput = ClusterInput.dirty(state.clusterInput.value);
+    final detailsInput = AddressDetailsInput.dirty(state.detailInput.value);
+    emit(state.copyWith(
+      labelInput: labelInput,
+      residenceInput: residenceInput,
+      clusterInput: clusterInput,
+      detailInput: detailsInput,
+      status: Formz.validate(
+          [labelInput, residenceInput, clusterInput, detailsInput]),
+    ));
+    if (state.status.isValidated) {
+      emit(state.copyWith(status: FormzStatus.submissionInProgress));
+
+      final address = Address(
+        label: labelInput.value,
+        residenceUuid: residenceInput.value,
+        clusterUuid: clusterInput.value,
+        details: detailsInput.value,
+      );
+
+      try {
+        var login = await AddressRepository().createAddress(address);
+        if (login == null) {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Koneksi internet terputus',
+          ));
+        } else {
+          emit(state.copyWith(
+            status: FormzStatus.submissionSuccess,
+            message: '',
+          ));
+        }
+      } on DioError catch (e) {
+        if (e.response?.statusCode == 401) {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Unauthorized',
+          ));
+        } else {
+          emit(state.copyWith(
+            status: FormzStatus.submissionFailure,
+            message: 'Koneksi internet terputus',
+          ));
+        }
+      }
+    }
   }
 }

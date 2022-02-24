@@ -1,7 +1,7 @@
 import 'package:apate/data/models/cluster.dart';
 
 class Address {
-  String uuid;
+  String? uuid;
   String label;
   String residenceUuid;
   String clusterUuid;
@@ -9,11 +9,11 @@ class Address {
   String details;
 
   Address({
-    required this.uuid,
+    this.uuid,
     required this.label,
     required this.residenceUuid,
     required this.clusterUuid,
-    required this.cluster,
+    this.cluster,
     required this.details,
   });
 

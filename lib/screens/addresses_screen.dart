@@ -1,6 +1,6 @@
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/data/models/address.dart';
-import 'package:apate/data/repositories/addresses_repository.dart';
+import 'package:apate/data/repositories/address_repository.dart';
 import 'package:apate/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,7 +32,7 @@ class AddressesBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          AddressesBloc(AddressesRepository())..add(AddressesFetchEvent()),
+          AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
       child: BlocBuilder<AddressesBloc, AddressesState>(
         builder: (context, state) {
           if (state is AddressesFetchSuccess) {

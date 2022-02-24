@@ -4,7 +4,7 @@ class AddressFormState extends Equatable {
   final AddressLabelInput labelInput;
   final ResidenceInput residenceInput;
   final ClusterInput clusterInput;
-  final AddressDetailInput detailInput;
+  final AddressDetailsInput detailInput;
   final FormzStatus status;
   final String message;
 
@@ -12,7 +12,7 @@ class AddressFormState extends Equatable {
     this.labelInput = const AddressLabelInput.pure(),
     this.residenceInput = const ResidenceInput.pure(),
     this.clusterInput = const ClusterInput.pure(),
-    this.detailInput = const AddressDetailInput.pure(),
+    this.detailInput = const AddressDetailsInput.pure(),
     this.status = FormzStatus.pure,
     this.message = '',
   });
@@ -21,7 +21,7 @@ class AddressFormState extends Equatable {
     AddressLabelInput? labelInput,
     ResidenceInput? residenceInput,
     ClusterInput? clusterInput,
-    AddressDetailInput? detailInput,
+    AddressDetailsInput? detailInput,
     FormzStatus? status,
     String? message,
   }) {

@@ -2,7 +2,7 @@ import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/bloc/merchants_bloc.dart';
 import 'package:apate/components/merchant_card.dart';
 import 'package:apate/components/session_expired_dialog.dart';
-import 'package:apate/data/repositories/addresses_repository.dart';
+import 'package:apate/data/repositories/address_repository.dart';
 import 'package:apate/data/repositories/merchants_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,8 +27,8 @@ class ShopBody extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => AddressesBloc(AddressesRepository())
-              ..add(AddressesFetchEvent()),
+            create: (context) =>
+                AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
           ),
           BlocProvider(
             create: (context) =>
