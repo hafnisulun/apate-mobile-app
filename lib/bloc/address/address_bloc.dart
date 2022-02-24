@@ -9,7 +9,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 part 'address_event.dart';
-
 part 'address_state.dart';
 
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
@@ -30,12 +29,10 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
   void _onAddressResidenceFetchEvent(
       AddressResidenceFetchEvent event, Emitter<AddressState> emit) async {
-    print('event.residenceUuid ${event.residenceUuid}');
     emit(AddressResidenceFetchLoading());
     try {
       final ResidenceResponse? residence =
           await ResidenceRepository().getResidence(event.residenceUuid);
-      print('[ResidenceBloc] [_onResidenceFetchEvent] getResidence done');
       if (residence == null) {
         emit(AddressResidenceFetchError(message: "Koneksi internet terputus"));
       } else {
@@ -59,15 +56,15 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
 
   void _onAddressClusterFetchEvent(
       AddressClusterFetchEvent event, Emitter<AddressState> emit) async {
-    print('event.residence: ${event.residence}');
-    print('event.clusterUuid: ${event.clusterUuid}');
-    emit(AddressClusterFetchLoading());
+    emit(AddressClusterFetchLoading(residence: event.residence));
     try {
       final ClusterResponse? cluster = await _clusterRepository.getCluster(
           event.residence.uuid, event.clusterUuid);
-      print('[ClusterBloc] [_onClusterFetchEvent] getCluster done');
       if (cluster == null) {
-        emit(AddressClusterFetchError(message: "Koneksi internet terputus"));
+        emit(AddressClusterFetchError(
+          residence: event.residence,
+          message: "Koneksi internet terputus",
+        ));
       } else {
         emit(AddressClusterFetchSuccess(
           residence: event.residence,
@@ -75,12 +72,15 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         ));
       }
     } on DioError catch (e) {
-      print(
-          '[ClusterBloc] [_onClusterFetchEvent] exception response code: ${e.response?.statusCode}');
+      print('[AddressBloc] [_onAddressClusterFetchEvent] exception response' +
+          ' code: ${e.response?.statusCode}');
       if (e.response?.statusCode == 401) {
         emit(AddressClusterFetchUnauthorized());
       } else {
-        emit(AddressClusterFetchError(message: 'Koneksi internet terputus'));
+        emit(AddressClusterFetchError(
+          residence: event.residence,
+          message: 'Koneksi internet terputus',
+        ));
       }
     }
   }
@@ -89,8 +89,6 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       AddressClustersFetchEvent event, Emitter<AddressState> emit) async {
     try {
       emit(AddressClustersFetchLoading());
-      print(
-          '[AddressBloc] [_onAddressClusterFetchEvent] residence UUID: ${event.residence.uuid}');
       final clustersResponse =
           await _clusterRepository.getClusters(event.residence.uuid);
       if (clustersResponse == null) {
@@ -99,8 +97,8 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         emit(AddressClustersFetchSuccess(clusters: clustersResponse.data));
       }
     } on DioError catch (e) {
-      print(
-          '[AddressBloc] [_onAddressClusterFetchEvent] exception response code: ${e.response?.statusCode}');
+      print('[AddressBloc] [_onAddressClustersFetchEvent] exception response' +
+          ' code: ${e.response?.statusCode}');
       if (e.response?.statusCode == 401) {
         emit(AddressClustersFetchUnauthorized());
       } else {

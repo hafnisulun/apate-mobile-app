@@ -52,8 +52,11 @@ class AddressBody extends StatelessWidget {
           create: (context) {
             final addressBloc = AddressBloc(ClusterRepository());
             if (address != null) {
-              addressBloc.add(AddressResidenceFetchEvent(
-                  residenceUuid: address!.residenceUuid));
+              addressBloc.add(
+                AddressResidenceFetchEvent(
+                  residenceUuid: address!.residenceUuid,
+                ),
+              );
             }
             return addressBloc;
           },
@@ -101,7 +104,7 @@ class AddressBody extends StatelessWidget {
                                 return AddressResidenceField(
                                   initialValue: state.residence,
                                 );
-                              } else if (state is AddressClusterFetchSuccess) {
+                              } else if (state is AddressClusterFetch) {
                                 return AddressResidenceField(
                                   initialValue: state.residence,
                                 );
@@ -238,7 +241,8 @@ class AddressResidenceField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(BuildContext context, Residence? item, bool isSelected) {
+  Widget _customPopupItem(
+      BuildContext context, Residence? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -318,7 +322,8 @@ class AddressClusterField extends StatelessWidget {
     );
   }
 
-  Widget _customPopupItem(BuildContext context, Cluster? item, bool isSelected) {
+  Widget _customPopupItem(
+      BuildContext context, Cluster? item, bool isSelected) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
@@ -374,8 +379,7 @@ class AddressSubmitButton extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: AptFlatButton(
                 onPressed: state.status.isValidated
-                    ? () =>
-                    context
+                    ? () => context
                         .read<AddressFormBloc>()
                         .add(AddressFormSubmitEvent(uuid: uuid))
                     : null,

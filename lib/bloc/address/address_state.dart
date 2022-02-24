@@ -6,22 +6,17 @@ abstract class AddressState extends Equatable {
 
 class AddressIdle extends AddressState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressResidenceFetchUnauthorized extends AddressState {
   @override
-  List<Object> get props => [];
-}
-
-class AddressResidenceFetchIdle extends AddressState {
-  @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressResidenceFetchLoading extends AddressState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressResidenceFetchSuccess extends AddressState {
@@ -30,7 +25,7 @@ class AddressResidenceFetchSuccess extends AddressState {
   const AddressResidenceFetchSuccess({required this.residence});
 
   @override
-  List<Object> get props => [residence];
+  List<Object?> get props => [residence];
 }
 
 class AddressResidenceFetchError extends AddressState {
@@ -39,47 +34,62 @@ class AddressResidenceFetchError extends AddressState {
   const AddressResidenceFetchError({required this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 
   @override
   String toString() => 'AddressResidenceFetchError { message: $message }';
 }
 
-class AddressClusterFetchUnauthorized extends AddressState {
-  @override
-  List<Object> get props => [];
-}
-
-class AddressClusterFetchIdle extends AddressState {
-  @override
-  List<Object> get props => [];
-}
-
-class AddressClusterFetchLoading extends AddressState {
-  @override
-  List<Object> get props => [];
-}
-
-class AddressClusterFetchSuccess extends AddressState {
+class AddressClusterFetch extends AddressState {
   final Residence residence;
-  final Cluster cluster;
 
-  const AddressClusterFetchSuccess({
+  AddressClusterFetch({
     required this.residence,
-    required this.cluster,
   });
 
   @override
-  List<Object> get props => [cluster];
+  List<Object?> get props => [residence];
 }
 
-class AddressClusterFetchError extends AddressState {
-  final String message;
+class AddressClusterFetchUnauthorized extends AddressState {
+  @override
+  List<Object?> get props => [];
+}
 
-  const AddressClusterFetchError({required this.message});
+class AddressClusterFetchLoading extends AddressClusterFetch {
+  final Residence residence;
+
+  AddressClusterFetchLoading({required this.residence})
+      : super(residence: residence);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [residence];
+}
+
+class AddressClusterFetchSuccess extends AddressClusterFetch {
+  final Residence residence;
+  final Cluster cluster;
+
+  AddressClusterFetchSuccess({
+    required this.residence,
+    required this.cluster,
+  }) : super(residence: residence);
+
+  @override
+  List<Object?> get props => [residence, cluster];
+}
+
+class AddressClusterFetchError extends AddressClusterFetch {
+  final Residence residence;
+  final String message;
+
+  AddressClusterFetchError({
+    required this.residence,
+    required this.message,
+  }) : super(residence: residence);
+
+  @override
+  List<Object?> get props => [residence, message];
 
   @override
   String toString() => 'AddressClusterFetchError { message: $message }';
@@ -87,7 +97,7 @@ class AddressClusterFetchError extends AddressState {
 
 class AddressClustersFetchLoading extends AddressState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressClustersFetchSuccess extends AddressState {
@@ -96,7 +106,7 @@ class AddressClustersFetchSuccess extends AddressState {
   const AddressClustersFetchSuccess({required this.clusters});
 
   @override
-  List<Object> get props => [clusters];
+  List<Object?> get props => [clusters];
 }
 
 class AddressClustersFetchError extends AddressState {
@@ -105,7 +115,7 @@ class AddressClustersFetchError extends AddressState {
   const AddressClustersFetchError({required this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 
   @override
   String toString() => 'AddressClustersFetchError { message: $message }';
@@ -113,7 +123,7 @@ class AddressClustersFetchError extends AddressState {
 
 class AddressClustersFetchUnauthorized extends AddressState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressResidenceChangeSuccess extends AddressState {
@@ -122,5 +132,5 @@ class AddressResidenceChangeSuccess extends AddressState {
   const AddressResidenceChangeSuccess({required this.residence});
 
   @override
-  List<Object> get props => [residence];
+  List<Object?> get props => [residence];
 }
