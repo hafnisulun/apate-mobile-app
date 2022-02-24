@@ -71,7 +71,7 @@ class AddressBody extends StatelessWidget {
         listener: (context, state) {
           if (state.status.isSubmissionSuccess) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(state.status);
           } else if (state.status.isSubmissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

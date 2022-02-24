@@ -1,57 +1,73 @@
+import 'dart:async';
+
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/data/models/address.dart';
 import 'package:apate/data/repositories/address_repository.dart';
 import 'package:apate/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class AddressesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Alamat'),
-        automaticallyImplyLeading: true,
-        actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(right: 16),
-              child: GestureDetector(
-                onTap: () => pushNewScreen(context, screen: AddressScreen()),
-                child: Icon(Icons.add),
-              )),
-        ],
-      ),
-      body: AddressesBody(),
+    return BlocProvider(
+      create: (context) =>
+          AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
+      child:
+          BlocBuilder<AddressesBloc, AddressesState>(builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Daftar Alamat'),
+            automaticallyImplyLeading: true,
+            actions: <Widget>[
+              Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      pushNewScreen(context, screen: AddressScreen())
+                          .then((value) => onGoBack(context, value));
+                    },
+                    child: Icon(Icons.add),
+                  )),
+            ],
+          ),
+          body: AddressesBody(),
+        );
+      }),
     );
+  }
+
+  FutureOr onGoBack(BuildContext context, dynamic value) {
+    print('[AddressesScreen] [onGoBack] value: $value');
+    if (value is FormzStatus && value.isSubmissionSuccess) {
+      context.read<AddressesBloc>().add(AddressesFetchEvent());
+    }
   }
 }
 
 class AddressesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
-      child: BlocBuilder<AddressesBloc, AddressesState>(
-        builder: (context, state) {
-          if (state is AddressesFetchSuccess) {
-            return AddressesView(addresses: state.addresses);
-          } else if (state is AddressesFetchError) {
-            return Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              alignment: Alignment.topCenter,
-              child: Text('Error'),
-            );
-          } else {
-            return Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              alignment: Alignment.topCenter,
-              child: Text('Loading...'),
-            );
-          }
-        },
-      ),
+    return BlocBuilder<AddressesBloc, AddressesState>(
+      builder: (context, state) {
+        if (state is AddressesFetchSuccess) {
+          return AddressesView(addresses: state.addresses);
+        } else if (state is AddressesFetchError) {
+          return Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            alignment: Alignment.topCenter,
+            child: Text('Error'),
+          );
+        } else {
+          return Container(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            alignment: Alignment.topCenter,
+            child: Text('Loading...'),
+          );
+        }
+      },
     );
   }
 }
@@ -71,7 +87,7 @@ class AddressesView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) =>
+                  (BuildContext context, int index) =>
                   AddressView(address: addresses[index]),
               childCount: addresses.length,
             ),
