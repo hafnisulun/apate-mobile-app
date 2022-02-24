@@ -6,7 +6,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 part 'cluster_event.dart';
-
 part 'cluster_state.dart';
 
 class ClusterBloc extends Bloc<ClusterEvent, ClusterState> {
@@ -29,7 +28,10 @@ class ClusterBloc extends Bloc<ClusterEvent, ClusterState> {
         if (cluster == null) {
           emit(ClusterFetchError(message: "Koneksi internet terputus"));
         } else {
-          emit(ClusterFetchSuccess(cluster: cluster.data));
+          emit(ClusterFetchSuccess(
+            residenceUuid: event.residenceUuid!,
+            cluster: cluster.data,
+          ));
         }
       } on DioError catch (e) {
         print(

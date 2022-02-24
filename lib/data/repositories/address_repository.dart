@@ -37,4 +37,19 @@ class AddressRepository {
       throw e;
     }
   }
+
+  Future<AddressResponse?> updateAddress(Address address) async {
+    Dio dio = Dio();
+    try {
+      dio.interceptors.add(Auth.getDioInterceptorsWrapper(dio));
+      String url = join(API_BASE_URL, 'users/me/addresses', address.uuid);
+      print('[AddressRepository] [updateAddress] url: $url');
+      final response = await dio.put(Uri.encodeFull(url), data: address);
+      print('[AddressRepository] [updateAddress] response: $response');
+      return AddressResponse.fromJson(response.data);
+    } on DioError catch (e) {
+      print('[AddressRepository] [updateAddress] exception: ${e.message}');
+      throw e;
+    }
+  }
 }

@@ -10,7 +10,6 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 part 'address_form_event.dart';
-
 part 'address_form_state.dart';
 
 class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
@@ -18,7 +17,7 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
     on<AddressFormLabelChangeEvent>(_onAddressFormLabelChangeEvent);
     on<AddressFormResidenceChangeEvent>(_onAddressFormResidenceChangeEvent);
     on<AddressFormClusterChangeEvent>(_onAddressFormClusterChangeEvent);
-    on<AddressFormDetailChangeEvent>(_onAddressFormDetailChangeEvent);
+    on<AddressFormDetailsChangeEvent>(_onAddressFormDetailChangeEvent);
     on<AddressFormSubmitEvent>(_onAddressSubmitEvent);
   }
 
@@ -31,8 +30,8 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   void _onAddressFormLabelChangeEvent(
       AddressFormLabelChangeEvent event, Emitter<AddressFormState> emit) {
     final labelInput = AddressLabelInput.dirty(event.label);
-    print(
-        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] labelInput.value: +${labelInput.value}');
+    print('[AddressFormBloc] [_onAddressFormLabelChangeEvent] ' +
+        'labelInput.value: ${labelInput.value}');
     emit(state.copyWith(
       labelInput:
           labelInput.valid ? labelInput : AddressLabelInput.pure(event.label),
@@ -65,13 +64,13 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
 
   void _onAddressFormClusterChangeEvent(
       AddressFormClusterChangeEvent event, Emitter<AddressFormState> emit) {
-    final clusterInput = ClusterInput.dirty(event.clusterUuid);
+    final clusterInput = ClusterInput.dirty(event.clusterUuid ?? '');
     print(
         '[AddressFormBloc] [_onAddressFormClusterChangeEvent] clusterInput.value: ${clusterInput.value}');
     emit(state.copyWith(
       clusterInput: clusterInput.valid
           ? clusterInput
-          : ClusterInput.pure(event.clusterUuid),
+          : ClusterInput.pure(event.clusterUuid ?? ''),
       status: Formz.validate([
         state.labelInput,
         state.residenceInput,
@@ -82,14 +81,14 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   }
 
   void _onAddressFormDetailChangeEvent(
-      AddressFormDetailChangeEvent event, Emitter<AddressFormState> emit) {
-    final detailInput = AddressDetailsInput.dirty(event.detail);
+      AddressFormDetailsChangeEvent event, Emitter<AddressFormState> emit) {
+    final detailInput = AddressDetailsInput.dirty(event.details);
     print(
-        '[AddressFormBloc] [_onAddressFormLabelChangeEvent] detailInput.value: ${detailInput.value}');
+        '[AddressFormBloc] [_onAddressFormDetailChangeEvent] detailInput.value: ${detailInput.value}');
     emit(state.copyWith(
       detailInput: detailInput.valid
           ? detailInput
-          : AddressDetailsInput.pure(event.detail),
+          : AddressDetailsInput.pure(event.details),
       status: Formz.validate([
         state.labelInput,
         state.residenceInput,
@@ -102,6 +101,7 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
   void _onAddressSubmitEvent(
       AddressFormSubmitEvent event, Emitter<AddressFormState> emit) async {
     print('[AddressFormBloc] [_onAddressSubmitEvent] state: $state');
+    final uuid = event.uuid;
     final labelInput = AddressLabelInput.dirty(state.labelInput.value);
     final residenceInput = ResidenceInput.dirty(state.residenceInput.value);
     final clusterInput = ClusterInput.dirty(state.clusterInput.value);
@@ -118,6 +118,7 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
       emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
       final address = Address(
+        uuid: uuid,
         label: labelInput.value,
         residenceUuid: residenceInput.value,
         clusterUuid: clusterInput.value,
@@ -125,8 +126,13 @@ class AddressFormBloc extends Bloc<AddressFormEvent, AddressFormState> {
       );
 
       try {
-        var login = await AddressRepository().createAddress(address);
-        if (login == null) {
+        var updatedAddress;
+        if (address.uuid != null) {
+          updatedAddress = await AddressRepository().updateAddress(address);
+        } else {
+          updatedAddress = await AddressRepository().createAddress(address);
+        }
+        if (updatedAddress == null) {
           emit(state.copyWith(
             status: FormzStatus.submissionFailure,
             message: 'Koneksi internet terputus',

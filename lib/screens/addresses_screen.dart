@@ -122,7 +122,8 @@ class AddressView extends StatelessWidget {
             top: 0,
             child: IconButton(
               onPressed: () => pushNewScreen(context,
-                  screen: AddressScreen(address: address)),
+                      screen: AddressScreen(address: address))
+                  .then((value) => onGoBack(context, value)),
               icon: Icon(Icons.edit),
             ),
           ),
@@ -145,5 +146,12 @@ class AddressView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  FutureOr onGoBack(BuildContext context, dynamic value) {
+    print('[AddressView] [onGoBack] value: $value');
+    if (value is FormzStatus && value.isSubmissionSuccess) {
+      context.read<AddressesBloc>().add(AddressesFetchEvent());
+    }
   }
 }

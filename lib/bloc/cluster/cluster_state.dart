@@ -20,9 +20,13 @@ class ClusterFetchLoading extends ClusterState {
 }
 
 class ClusterFetchSuccess extends ClusterState {
+  final String residenceUuid;
   final Cluster cluster;
 
-  const ClusterFetchSuccess({required this.cluster});
+  const ClusterFetchSuccess({
+    required this.residenceUuid,
+    required this.cluster,
+  });
 
   @override
   List<Object> get props => [cluster];

@@ -4,7 +4,7 @@ abstract class AddressFormEvent extends Equatable {
   const AddressFormEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AddressFormLabelChangeEvent extends AddressFormEvent {
@@ -30,25 +30,46 @@ class AddressFormResidenceChangeEvent extends AddressFormEvent {
 }
 
 class AddressFormClusterChangeEvent extends AddressFormEvent {
-  final String clusterUuid;
+  final String? clusterUuid;
 
   const AddressFormClusterChangeEvent({
-    required this.clusterUuid,
+    this.clusterUuid,
   });
 
   @override
-  List<Object> get props => [clusterUuid];
+  List<Object?> get props => [clusterUuid];
 }
 
-class AddressFormDetailChangeEvent extends AddressFormEvent {
-  final String detail;
+class AddressFormDetailsChangeEvent extends AddressFormEvent {
+  final String details;
 
-  const AddressFormDetailChangeEvent({
-    required this.detail,
+  const AddressFormDetailsChangeEvent({
+    required this.details,
   });
 
   @override
-  List<Object> get props => [detail];
+  List<Object> get props => [details];
 }
 
-class AddressFormSubmitEvent extends AddressFormEvent {}
+class AddressFormSubmitEvent extends AddressFormEvent {
+  final String? uuid;
+
+  const AddressFormSubmitEvent({
+    this.uuid,
+  });
+
+  List<Object?> get props => [uuid];
+}
+
+class AddressFormSubmitCreateEvent extends AddressFormEvent {}
+
+class AddressFormSubmitUpdateEvent extends AddressFormEvent {
+  final String uuid;
+
+  const AddressFormSubmitUpdateEvent({
+    required this.uuid,
+  });
+
+  @override
+  List<Object> get props => [uuid];
+}
