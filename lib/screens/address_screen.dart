@@ -1,6 +1,8 @@
 import 'package:apate/bloc/address/address_bloc.dart';
 import 'package:apate/bloc/address_form/address_form_bloc.dart';
 import 'package:apate/components/apt_flat_button.dart';
+import 'package:apate/components/dialog_background.dart';
+import 'package:apate/components/loading_dialog.dart';
 import 'package:apate/data/models/address.dart';
 import 'package:apate/data/models/cluster.dart';
 import 'package:apate/data/models/residence.dart';
@@ -66,6 +68,12 @@ class AddressBody extends StatelessWidget {
         listener: (context, state) {
           if (state.status.isSubmissionSuccess) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text('Alamat "${state.labelInput.value}" telah disimpan'),
+              ),
+            );
             Navigator.of(context).pop(state.status);
           } else if (state.status.isSubmissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -393,19 +401,14 @@ class OpacityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddressFormBloc, AddressFormState>(
-        builder: (context, state) {
-      if (state.status.isSubmissionInProgress) {
-        return Opacity(
-          opacity: 0.7,
-          child: const ModalBarrier(
-            dismissible: false,
-            color: Colors.black,
-          ),
-        );
-      } else {
-        return Container();
-      }
-    });
+      builder: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          return DialogBackground();
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
 
@@ -413,23 +416,15 @@ class LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AddressFormBloc, AddressFormState>(
-        builder: (context, state) {
-      if (state.status.isSubmissionInProgress) {
-        return Center(
-          child: AlertDialog(
-            content: new Row(
-              children: [
-                CircularProgressIndicator(),
-                Container(
-                    margin: EdgeInsets.only(left: 16),
-                    child: Text("Loading...")),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    });
+      builder: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          return Center(
+            child: LoadingDialog(),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }

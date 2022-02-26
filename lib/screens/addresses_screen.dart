@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
+import 'package:apate/components/dialog_background.dart';
+import 'package:apate/components/loading_dialog.dart';
 import 'package:apate/components/session_expired_dialog.dart';
 import 'package:apate/data/models/address.dart';
 import 'package:apate/data/repositories/address_repository.dart';
@@ -192,13 +194,7 @@ class OpacityView extends StatelessWidget {
     return BlocBuilder<AddressesBloc, AddressesState>(
       builder: (context, state) {
         if (state is AddressesLoading) {
-          return Opacity(
-            opacity: 0.7,
-            child: const ModalBarrier(
-              dismissible: false,
-              color: Colors.black,
-            ),
-          );
+          return DialogBackground();
         } else {
           return Container();
         }
@@ -214,16 +210,7 @@ class LoadingView extends StatelessWidget {
       builder: (context, state) {
         if (state is AddressesLoading) {
           return Center(
-            child: AlertDialog(
-              content: new Row(
-                children: [
-                  CircularProgressIndicator(),
-                  Container(
-                      margin: EdgeInsets.only(left: 16),
-                      child: Text("Loading...")),
-                ],
-              ),
-            ),
+            child: LoadingDialog(),
           );
         } else {
           return Container();
