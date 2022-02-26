@@ -77,7 +77,7 @@ class DestinationView extends StatelessWidget {
         ),
         BlocConsumer<AddressesBloc, AddressesState>(
           listener: (context, state) {
-            if (state is AddressesFetchUnauthorized) {
+            if (state is AddressesUnauthorized) {
               showDialog<void>(
                 context: context,
                 barrierDismissible: false,

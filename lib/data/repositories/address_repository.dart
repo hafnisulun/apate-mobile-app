@@ -52,4 +52,23 @@ class AddressRepository {
       throw e;
     }
   }
+
+  Future<bool> deleteAddress(Address address) async {
+    Dio dio = Dio();
+    try {
+      dio.interceptors.add(Auth.getDioInterceptorsWrapper(dio));
+      String url = join(API_BASE_URL, 'users/me/addresses', address.uuid);
+      print('[AddressRepository] [deleteAddress] url: $url');
+      final response = await dio.delete(Uri.encodeFull(url));
+      print('[AddressRepository] [deleteAddress] response code: ' +
+          '${response.statusCode}');
+      if (response.statusCode == 204) {
+        return true;
+      }
+      return false;
+    } on DioError catch (e) {
+      print('[AddressRepository] [deleteAddress] exception: ${e.message}');
+      throw e;
+    }
+  }
 }

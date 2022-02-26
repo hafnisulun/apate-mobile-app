@@ -4,14 +4,19 @@ abstract class AddressesState extends Equatable {
   const AddressesState();
 }
 
-class AddressesFetchUnauthorized extends AddressesState {
+class AddressesIdle extends AddressesState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class AddressesFetchLoading extends AddressesState {
+class AddressesLoading extends AddressesState {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
+}
+
+class AddressesUnauthorized extends AddressesState {
+  @override
+  List<Object?> get props => [];
 }
 
 class AddressesFetchSuccess extends AddressesState {
@@ -20,7 +25,7 @@ class AddressesFetchSuccess extends AddressesState {
   const AddressesFetchSuccess({required this.addresses});
 
   @override
-  List<Object> get props => [addresses];
+  List<Object?> get props => [addresses];
 }
 
 class AddressesFetchError extends AddressesState {
@@ -29,8 +34,29 @@ class AddressesFetchError extends AddressesState {
   const AddressesFetchError({required this.message});
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 
   @override
   String toString() => 'AddressFetchError { message: $message }';
+}
+
+class AddressesDeleteSuccess extends AddressesState {
+  final Address address;
+
+  AddressesDeleteSuccess({required this.address});
+
+  @override
+  List<Object?> get props => [address];
+}
+
+class AddressesDeleteError extends AddressesState {
+  final String message;
+
+  const AddressesDeleteError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+
+  @override
+  String toString() => 'AddressesDeleteError { message: $message }';
 }

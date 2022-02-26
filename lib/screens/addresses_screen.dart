@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
+import 'package:apate/components/session_expired_dialog.dart';
 import 'package:apate/data/models/address.dart';
 import 'package:apate/data/repositories/address_repository.dart';
 import 'package:apate/screens/address_screen.dart';
@@ -15,27 +16,44 @@ class AddressesScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
-      child:
-          BlocBuilder<AddressesBloc, AddressesState>(builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Daftar Alamat'),
-            automaticallyImplyLeading: true,
-            actions: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(right: 16),
-                  child: GestureDetector(
-                    onTap: () {
-                      pushNewScreen(context, screen: AddressScreen())
-                          .then((value) => onGoBack(context, value));
-                    },
-                    child: Icon(Icons.add),
-                  )),
-            ],
-          ),
-          body: AddressesBody(),
-        );
-      }),
+      child: BlocConsumer<AddressesBloc, AddressesState>(
+        listener: (context, state) {
+          if (state is AddressesDeleteSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Alamat "${state.address.label}" telah dihapus'),
+              ),
+            );
+            context.read<AddressesBloc>().add(AddressesFetchEvent());
+          } else if (state is AddressesUnauthorized) {
+            showDialog<void>(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) => SessionExpiredDialog(),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Daftar Alamat'),
+              automaticallyImplyLeading: true,
+              actions: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(right: 16),
+                    child: GestureDetector(
+                      onTap: () {
+                        pushNewScreen(context, screen: AddressScreen())
+                            .then((value) => onGoBack(context, value));
+                      },
+                      child: Icon(Icons.add),
+                    )),
+              ],
+            ),
+            body: AddressesBody(),
+          );
+        },
+      ),
     );
   }
 
@@ -50,24 +68,26 @@ class AddressesScreen extends StatelessWidget {
 class AddressesBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AddressesBloc, AddressesState>(
-      builder: (context, state) {
-        if (state is AddressesFetchSuccess) {
-          return AddressesView(addresses: state.addresses);
-        } else if (state is AddressesFetchError) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            alignment: Alignment.topCenter,
-            child: Text('Error'),
-          );
-        } else {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            alignment: Alignment.topCenter,
-            child: Text('Loading...'),
-          );
-        }
-      },
+    return Stack(
+      children: <Widget>[
+        BlocBuilder<AddressesBloc, AddressesState>(
+          builder: (context, state) {
+            if (state is AddressesFetchSuccess) {
+              return AddressesView(addresses: state.addresses);
+            } else if (state is AddressesFetchError) {
+              return Container(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                alignment: Alignment.topCenter,
+                child: Text('Error'),
+              );
+            } else {
+              return Container();
+            }
+          },
+        ),
+        OpacityView(),
+        LoadingView(),
+      ],
     );
   }
 }
@@ -118,13 +138,23 @@ class AddressView extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned(
-            right: 4,
+            right: 40,
             top: 0,
             child: IconButton(
               onPressed: () => pushNewScreen(context,
                       screen: AddressScreen(address: address))
                   .then((value) => onGoBack(context, value)),
               icon: Icon(Icons.edit),
+            ),
+          ),
+          Positioned(
+            right: 4,
+            top: 0,
+            child: IconButton(
+              onPressed: () => context
+                  .read<AddressesBloc>()
+                  .add(AddressesDeleteEvent(address: address)),
+              icon: Icon(Icons.delete),
             ),
           ),
           Column(
@@ -153,5 +183,52 @@ class AddressView extends StatelessWidget {
     if (value is FormzStatus && value.isSubmissionSuccess) {
       context.read<AddressesBloc>().add(AddressesFetchEvent());
     }
+  }
+}
+
+class OpacityView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddressesBloc, AddressesState>(
+      builder: (context, state) {
+        if (state is AddressesLoading) {
+          return Opacity(
+            opacity: 0.7,
+            child: const ModalBarrier(
+              dismissible: false,
+              color: Colors.black,
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+}
+
+class LoadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AddressesBloc, AddressesState>(
+      builder: (context, state) {
+        if (state is AddressesLoading) {
+          return Center(
+            child: AlertDialog(
+              content: new Row(
+                children: [
+                  CircularProgressIndicator(),
+                  Container(
+                      margin: EdgeInsets.only(left: 16),
+                      child: Text("Loading...")),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
