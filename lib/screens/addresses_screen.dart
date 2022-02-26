@@ -109,7 +109,7 @@ class AddressesView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) =>
+              (BuildContext context, int index) =>
                   AddressView(address: addresses[index]),
               childCount: addresses.length,
             ),
@@ -153,9 +153,15 @@ class AddressView extends StatelessWidget {
             right: 4,
             top: 0,
             child: IconButton(
-              onPressed: () => context
-                  .read<AddressesBloc>()
-                  .add(AddressesDeleteEvent(address: address)),
+              onPressed: () => showDialog<void>(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext dialogContext) =>
+                    AddressDeleteConfirmationDialog(
+                  ancestorContext: context,
+                  address: address,
+                ),
+              ),
               icon: Icon(Icons.delete),
             ),
           ),
@@ -185,6 +191,44 @@ class AddressView extends StatelessWidget {
     if (value is FormzStatus && value.isSubmissionSuccess) {
       context.read<AddressesBloc>().add(AddressesFetchEvent());
     }
+  }
+}
+
+class AddressDeleteConfirmationDialog extends StatelessWidget {
+  final BuildContext ancestorContext;
+  final Address address;
+
+  AddressDeleteConfirmationDialog({
+    required this.ancestorContext,
+    required this.address,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Hapus alamat?'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: <Widget>[
+            Text('Yakin menghapus alamat "${address.label}"?'),
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: Text("BATAL"),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+            child: Text("HAPUS"),
+            onPressed: () {
+              ancestorContext
+                  .read<AddressesBloc>()
+                  .add(AddressesDeleteEvent(address: address));
+              Navigator.of(context).pop();
+            }),
+      ],
+    );
   }
 }
 
