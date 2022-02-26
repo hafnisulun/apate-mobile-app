@@ -87,10 +87,14 @@ class DestinationView extends StatelessWidget {
           },
           builder: (context, state) {
             if (state is AddressesFetchSuccess) {
-              return Text(
-                state.addresses[0].label + ', ' + state.addresses[0].details,
-                style: Theme.of(context).textTheme.bodyText1,
-              );
+              if (state.addresses.length > 0) {
+                return Text(
+                  state.addresses[0].label + ', ' + state.addresses[0].details,
+                  style: Theme.of(context).textTheme.bodyText1,
+                );
+              } else {
+                return Text('[Belum ada alamat]');
+              }
             } else if (state is AddressesFetchError) {
               return Text('Error');
             } else {
