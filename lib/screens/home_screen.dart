@@ -2,40 +2,25 @@ import 'package:apate/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  late PersistentTabController _controller;
-  late bool _hideNavBar;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = PersistentTabController(initialIndex: 0);
-    _hideNavBar = false;
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
       context,
-      controller: _controller,
+      controller: PersistentTabController(initialIndex: 0),
       screens: _buildScreens(),
-      items: _buildNavBarItems(),
+      items: _buildNavBarItems(context),
       confineInSafeArea: true,
       backgroundColor: Colors.white,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
       hideNavigationBarWhenKeyboardShows: true,
-      hideNavigationBar: _hideNavBar,
+      hideNavigationBar: false,
       decoration: NavBarDecoration(
         border: Border(
             top: BorderSide(
-              color: Colors.grey[300]!,
+          color: Colors.grey[300]!,
         )),
       ),
       popAllScreensOnTapOfSelectedTab: true,
@@ -52,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<PersistentBottomNavBarItem> _buildNavBarItems() {
+  List<PersistentBottomNavBarItem> _buildNavBarItems(BuildContext context) {
     return [
       PersistentBottomNavBarItem(
         icon: Icon(Icons.shopping_basket),
