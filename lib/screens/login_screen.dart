@@ -146,18 +146,30 @@ class EmailInput extends StatelessWidget {
 class PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: TextField(
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Password',
-        ),
-        obscureText: true,
-        onChanged: (value) {
-          context.read<LoginBloc>().add(PasswordChanged(password: value));
-        },
-      ),
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Password',
+              suffixIcon: IconButton(
+                icon: state.isPasswordMasked
+                    ? Icon(Icons.visibility)
+                    : Icon(Icons.visibility_off),
+                onPressed: () {
+                  context.read<LoginBloc>().add(PasswordMaskToggle());
+                },
+              ),
+            ),
+            obscureText: state.isPasswordMasked,
+            onChanged: (value) {
+              context.read<LoginBloc>().add(PasswordChanged(password: value));
+            },
+          ),
+        );
+      },
     );
   }
 }

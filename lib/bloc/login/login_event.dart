@@ -29,4 +29,6 @@ class PasswordChanged extends LoginEvent {
 
 class PasswordUnfocused extends LoginEvent {}
 
+class PasswordMaskToggle extends LoginEvent {}
+
 class FormSubmitted extends LoginEvent {}

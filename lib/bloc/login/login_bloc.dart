@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 part 'login_event.dart';
-
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -18,6 +17,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<PasswordChanged>(_onPasswordChanged);
     on<EmailUnfocused>(_onEmailUnfocused);
     on<PasswordUnfocused>(_onPasswordUnfocused);
+    on<PasswordMaskToggle>(_onPasswordMaskToggle);
     on<FormSubmitted>(_onFormSubmitted);
   }
 
@@ -58,6 +58,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     final password = Password.dirty(state.password.value);
     emit(state.copyWith(
       password: password,
+      status: Formz.validate([state.email, password]),
+    ));
+  }
+
+  void _onPasswordMaskToggle(
+    PasswordMaskToggle event,
+    Emitter<LoginState> emit,
+  ) {
+    final password = Password.dirty(state.password.value);
+    emit(state.copyWith(
+      isPasswordMasked: !state.isPasswordMasked,
       status: Formz.validate([state.email, password]),
     ));
   }
