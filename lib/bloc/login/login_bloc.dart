@@ -1,9 +1,9 @@
 import 'package:apate/data/models/email.dart';
 import 'package:apate/data/models/password.dart';
 import 'package:apate/data/repositories/login_repository.dart';
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 part 'login_event.dart';

@@ -2,6 +2,7 @@ import 'package:apate/bloc/login/login_bloc.dart';
 import 'package:apate/components/apt_flat_button.dart';
 import 'package:apate/data/repositories/login_repository.dart';
 import 'package:apate/screens/home_screen.dart';
+import 'package:apate/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -135,9 +136,8 @@ class EmailInput extends StatelessWidget {
         ),
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
-        onChanged: (value) {
-          context.read<LoginBloc>().add(EmailChanged(email: value));
-        },
+        onChanged: (value) =>
+            context.read<LoginBloc>().add(EmailChanged(email: value)),
       ),
     );
   }
@@ -146,30 +146,30 @@ class EmailInput extends StatelessWidget {
 class PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: TextField(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: BlocBuilder<LoginBloc, LoginState>(
+        builder: (context, state) {
+          return TextField(
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Password',
               suffixIcon: IconButton(
-                icon: state.isPasswordMasked
-                    ? Icon(Icons.visibility)
-                    : Icon(Icons.visibility_off),
-                onPressed: () {
-                  context.read<LoginBloc>().add(PasswordMaskToggle());
-                },
+                icon: Icon(
+                  state.isPasswordMasked
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                ),
+                onPressed: () =>
+                    context.read<LoginBloc>().add(PasswordMaskToggle()),
               ),
             ),
             obscureText: state.isPasswordMasked,
-            onChanged: (value) {
-              context.read<LoginBloc>().add(PasswordChanged(password: value));
-            },
-          ),
-        );
-      },
+            onChanged: (value) =>
+                context.read<LoginBloc>().add(PasswordChanged(password: value)),
+          );
+        },
+      ),
     );
   }
 }
@@ -223,10 +223,10 @@ class SignUpView extends StatelessWidget {
         children: [
           Text('Belum memiliki akun?'),
           TextButton(
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Daftar'),
-              ),
+            onPressed: () => Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => SignUpScreen()),
+              (_) => false,
             ),
             child: Text('Daftar'),
           ),
@@ -239,42 +239,47 @@ class SignUpView extends StatelessWidget {
 class OpacityView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      if (state.status.isSubmissionInProgress) {
-        return Opacity(
-          opacity: 0.7,
-          child: const ModalBarrier(
-            dismissible: false,
-            color: Colors.black,
-          ),
-        );
-      } else {
-        return Container();
-      }
-    });
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          return Opacity(
+            opacity: 0.7,
+            child: const ModalBarrier(
+              dismissible: false,
+              color: Colors.black,
+            ),
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
 
 class LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      if (state.status.isSubmissionInProgress) {
-        return Center(
-          child: AlertDialog(
-            content: new Row(
-              children: [
-                CircularProgressIndicator(),
-                Container(
+    return BlocBuilder<LoginBloc, LoginState>(
+      builder: (context, state) {
+        if (state.status.isSubmissionInProgress) {
+          return Center(
+            child: AlertDialog(
+              content: new Row(
+                children: [
+                  CircularProgressIndicator(),
+                  Container(
                     margin: EdgeInsets.only(left: 16),
-                    child: Text("Loading...")),
-              ],
+                    child: Text("Loading..."),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    });
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
