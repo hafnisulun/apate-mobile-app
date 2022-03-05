@@ -76,11 +76,11 @@ class AccountDetailsView extends StatelessWidget {
                     ),
                     AccountFieldView(
                       field: 'No. telp.',
-                      value: state.account.phone,
+                      value: state.account.phone ?? 'N/A',
                     ),
                     AccountFieldView(
                       field: 'Jenis kelamin',
-                      value: state.account.gender,
+                      value: state.account.gender ?? 'N/A',
                     ),
                   ],
                 ),

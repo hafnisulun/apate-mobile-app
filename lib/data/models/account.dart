@@ -2,8 +2,8 @@ class Account {
   String uuid;
   String email;
   String name;
-  String phone;
-  String gender;
+  String? phone;
+  String? gender;
 
   Account({
     required this.uuid,
