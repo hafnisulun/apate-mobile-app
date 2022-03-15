@@ -9,6 +9,11 @@ class MerchantsFetchUnauthorized extends MerchantsState {
   List<Object> get props => [];
 }
 
+class MerchantsFetchIdle extends MerchantsState {
+  @override
+  List<Object> get props => [];
+}
+
 class MerchantsFetchLoading extends MerchantsState {
   @override
   List<Object> get props => [];

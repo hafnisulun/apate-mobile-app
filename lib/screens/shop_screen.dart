@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:apate/bloc/addresses/addresses_bloc.dart';
 import 'package:apate/bloc/merchants_bloc.dart';
 import 'package:apate/components/merchant_card.dart';
 import 'package:apate/components/session_expired_dialog.dart';
 import 'package:apate/data/repositories/address_repository.dart';
 import 'package:apate/data/repositories/merchants_repository.dart';
+import 'package:apate/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class ShopScreen extends StatelessWidget {
   @override
@@ -28,11 +32,10 @@ class ShopBody extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) =>
-                AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
+            AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
           ),
           BlocProvider(
-            create: (context) =>
-                MerchantsBloc(MerchantsRepository())..add(LoadMerchantsEvent()),
+            create: (context) => MerchantsBloc(MerchantsRepository()),
           ),
         ],
         child: ShopView(),
@@ -83,6 +86,35 @@ class DestinationView extends StatelessWidget {
                 barrierDismissible: false,
                 builder: (BuildContext context) => SessionExpiredDialog(),
               );
+            } else if (state is AddressesFetchSuccess) {
+              if (state.addresses.length > 0) {
+                context.read<MerchantsBloc>().add(LoadMerchantsEvent());
+              } else {
+                showDialog<void>(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext dialogContext) => AlertDialog(
+                    title: Text('Belum ada alamat'),
+                    content: SingleChildScrollView(
+                      child: ListBody(
+                        children: <Widget>[
+                          Text('Silakan tambahkan alamat Anda'),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("TAMBAH ALAMAT"),
+                        onPressed: () {
+                          pushNewScreen(context, screen: AddressScreen())
+                              .then((value) => onGoBack(context, value));
+                          Navigator.of(dialogContext).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }
             }
           },
           builder: (context, state) {
@@ -104,6 +136,11 @@ class DestinationView extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  FutureOr onGoBack(BuildContext context, dynamic value) {
+    print('[ShopScreen] [onGoBack] value: $value');
+    context.read<AddressesBloc>().add(AddressesFetchEvent());
   }
 }
 
@@ -133,7 +170,7 @@ class MerchantGridView extends StatelessWidget {
               [
                 ...List.generate(
                     state.merchants.data.length,
-                    (index) =>
+                        (index) =>
                         MerchantCard(merchant: state.merchants.data[index])),
               ],
             ),
@@ -167,13 +204,21 @@ class MerchantGridView extends StatelessWidget {
               ],
             ),
           );
-        } else {
+        } else if (state is MerchantsFetchLoading) {
           return SliverList(
             delegate: SliverChildListDelegate(
               [
                 Center(
                   child: CircularProgressIndicator(),
                 )
+              ],
+            ),
+          );
+        } else {
+          return SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                SizedBox.shrink(),
               ],
             ),
           );

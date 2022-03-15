@@ -10,7 +10,7 @@ part 'merchants_state.dart';
 class MerchantsBloc extends Bloc<MerchantsEvent, MerchantsState> {
   final MerchantsRepository _merchantsRepository;
 
-  MerchantsBloc(this._merchantsRepository) : super(MerchantsFetchLoading()) {
+  MerchantsBloc(this._merchantsRepository) : super(MerchantsFetchIdle()) {
     on<LoadMerchantsEvent>(_onLoadMerchantsEvent);
   }
 
