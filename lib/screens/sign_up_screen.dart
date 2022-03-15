@@ -190,7 +190,6 @@ class NameInput extends StatelessWidget {
           border: OutlineInputBorder(),
           labelText: 'Nama',
         ),
-        textInputAction: TextInputAction.next,
         onChanged: (value) =>
             context.read<SignUpBloc>().add(SignUpNameChange(name: value)),
       ),
