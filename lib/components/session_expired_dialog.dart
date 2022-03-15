@@ -5,7 +5,7 @@ class SessionExpiredDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Sesi Anda telah habis'),
+      title: Text('Sesi Anda telah berakhir'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
