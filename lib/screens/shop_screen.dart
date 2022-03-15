@@ -127,7 +127,7 @@ class MerchantGridView extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              childAspectRatio: 0.77,
+              childAspectRatio: 0.73,
             ),
             delegate: SliverChildListDelegate(
               [
