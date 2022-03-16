@@ -32,7 +32,7 @@ class ShopBody extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (context) =>
-            AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
+                AddressesBloc(AddressRepository())..add(AddressesFetchEvent()),
           ),
           BlocProvider(
             create: (context) => MerchantsBloc(MerchantsRepository()),
@@ -88,7 +88,9 @@ class DestinationView extends StatelessWidget {
               );
             } else if (state is AddressesFetchSuccess) {
               if (state.addresses.length > 0) {
-                context.read<MerchantsBloc>().add(LoadMerchantsEvent());
+                context
+                    .read<MerchantsBloc>()
+                    .add(MerchantsFetchEvent(state.addresses[0].residenceUuid));
               } else {
                 showDialog<void>(
                   context: context,
@@ -189,7 +191,7 @@ class MerchantGridView extends StatelessWidget {
                         TextButton(
                           onPressed: () => context
                               .read<MerchantsBloc>()
-                              .add(LoadMerchantsEvent()),
+                              .add(MerchantsFetchEvent(state.residenceUuid)),
                           child: Text("COBA LAGI"),
                           style: TextButton.styleFrom(
                             primary: Colors.white,

@@ -5,22 +5,29 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 part 'merchants_event.dart';
+
 part 'merchants_state.dart';
 
 class MerchantsBloc extends Bloc<MerchantsEvent, MerchantsState> {
   final MerchantsRepository _merchantsRepository;
 
   MerchantsBloc(this._merchantsRepository) : super(MerchantsFetchIdle()) {
-    on<LoadMerchantsEvent>(_onLoadMerchantsEvent);
+    on<MerchantsFetchEvent>(_onLoadMerchantsEvent);
   }
 
   void _onLoadMerchantsEvent(
-      LoadMerchantsEvent event, Emitter<MerchantsState> emit) async {
+      MerchantsFetchEvent event, Emitter<MerchantsState> emit) async {
     try {
       emit(MerchantsFetchLoading());
-      final merchants = await _merchantsRepository.getMerchants();
+      final merchants =
+          await _merchantsRepository.getMerchants(event.residenceUuid);
       if (merchants == null) {
-        emit(MerchantsFetchError(message: "Koneksi internet terputus"));
+        emit(
+          MerchantsFetchError(
+            residenceUuid: event.residenceUuid,
+            message: "Koneksi internet terputus",
+          ),
+        );
       } else {
         emit(MerchantsFetchSuccess(merchants: merchants));
       }
@@ -30,7 +37,12 @@ class MerchantsBloc extends Bloc<MerchantsEvent, MerchantsState> {
       if (e.response?.statusCode == 401) {
         emit(MerchantsFetchUnauthorized());
       } else {
-        emit(MerchantsFetchError(message: 'Koneksi internet terputus'));
+        emit(
+          MerchantsFetchError(
+            residenceUuid: event.residenceUuid,
+            message: 'Koneksi internet terputus',
+          ),
+        );
       }
     }
   }

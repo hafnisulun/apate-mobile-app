@@ -7,4 +7,11 @@ abstract class MerchantsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadMerchantsEvent extends MerchantsEvent {}
+class MerchantsFetchEvent extends MerchantsEvent {
+  final String residenceUuid;
+
+  MerchantsFetchEvent(this.residenceUuid);
+
+  @override
+  List<Object> get props => [residenceUuid];
+}

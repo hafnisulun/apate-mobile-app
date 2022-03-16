@@ -29,12 +29,16 @@ class MerchantsFetchSuccess extends MerchantsState {
 }
 
 class MerchantsFetchError extends MerchantsState {
+  final String residenceUuid;
   final String message;
 
-  const MerchantsFetchError({required this.message});
+  const MerchantsFetchError({
+    required this.residenceUuid,
+    required this.message,
+  });
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [residenceUuid, message];
 
   @override
   String toString() => 'MerchantsFetchError { message: $message }';
