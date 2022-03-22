@@ -10,6 +10,7 @@ import 'package:apate/screens/address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ShopScreen extends StatelessWidget {
   @override
@@ -45,25 +46,46 @@ class ShopBody extends StatelessWidget {
 }
 
 class ShopView extends StatelessWidget {
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  void _onRefresh(BuildContext context) async {
+    context.read<AddressesBloc>().add(AddressesFetchEvent());
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+    _refreshController.loadNoData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverPadding(
-          padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                DestinationView(),
-              ],
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropMaterialHeader(),
+      controller: _refreshController,
+      onRefresh: () => _onRefresh(context),
+      onLoading: _onLoading,
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  DestinationView(),
+                ],
+              ),
             ),
           ),
-        ),
-        SliverPadding(
-          padding: EdgeInsets.all(16),
-          sliver: MerchantGridView(),
-        ),
-      ],
+          SliverPadding(
+            padding: EdgeInsets.all(16),
+            sliver: MerchantGridView(),
+          ),
+        ],
+      ),
     );
   }
 }
