@@ -20,8 +20,8 @@ class Router {
         return MaterialPageRoute(
             builder: (_) => ShopScreen()); // case merchantRoute:
       //   return MaterialPageRoute(builder: (_) => MerchantScreen());
-      case checkoutRoute:
-        return MaterialPageRoute(builder: (_) => CheckoutScreen());
+      // case checkoutRoute:
+      //   return MaterialPageRoute(builder: (_) => CheckoutScreen());
       case notificationsRoute:
         return MaterialPageRoute(builder: (_) => NotificationsScreen());
       case accountRoute:

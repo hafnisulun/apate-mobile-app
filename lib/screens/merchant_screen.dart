@@ -66,6 +66,7 @@ class _MerchantBodyState extends State<MerchantBody> {
         AnimatedBuilder(
           animation: _notifier,
           builder: (_, __) => MerchantCart(
+            merchant: widget.merchant,
             totalItems: _notifier.totalItems,
             totalAmount: _notifier.totalAmount,
             updateCartCallback: _notifier.updateCart,
@@ -337,11 +338,13 @@ class MerchantScheduleRow extends StatelessWidget {
 }
 
 class MerchantCart extends StatefulWidget {
+  final Merchant merchant;
   final int totalItems;
   final int totalAmount;
   final Function updateCartCallback;
 
   MerchantCart({
+    required this.merchant,
     required this.totalItems,
     required this.totalAmount,
     required this.updateCartCallback,
@@ -368,7 +371,10 @@ class _MerchantCartState extends State<MerchantCart> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => CheckoutScreen()),
+                MaterialPageRoute(
+                  builder: (context) =>
+                      CheckoutScreen(merchant: widget.merchant),
+                ),
               ).then((value) => widget.updateCartCallback());
             },
             child: Row(

@@ -1,5 +1,6 @@
 import 'package:apate/components/cart_item_card.dart';
 import 'package:apate/data/models/cart_item.dart';
+import 'package:apate/data/models/merchant.dart';
 import 'package:apate/db_helper.dart';
 import 'package:apate/utils/number.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutScreen extends StatefulWidget {
+  final Merchant merchant;
+
+  CheckoutScreen({
+    required this.merchant,
+  });
+
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
@@ -35,6 +42,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ],
       ),
       body: CheckoutBody(
+        merchant: widget.merchant,
         cart: _cart,
       ),
     );
@@ -61,9 +69,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 }
 
 class CheckoutBody extends StatefulWidget {
+  final Merchant merchant;
   final List<CartItem> cart;
 
   CheckoutBody({
+    required this.merchant,
     required this.cart,
   });
 
@@ -84,7 +94,8 @@ class _CheckoutBodyState extends State<CheckoutBody> {
         CheckoutTotal(
           cart: widget.cart,
         ),
-        CheckoutOrderButton(
+        CheckoutOrderButtonContainer(
+          merchant: widget.merchant,
           cart: widget.cart,
         ),
       ],
@@ -171,36 +182,78 @@ class _CheckoutTotalState extends State<CheckoutTotal> {
   }
 }
 
-class CheckoutOrderButton extends StatelessWidget {
+class CheckoutOrderButtonContainer extends StatelessWidget {
+  final Merchant merchant;
   final List<CartItem> cart;
 
-  CheckoutOrderButton({
+  CheckoutOrderButtonContainer({
+    required this.merchant,
     required this.cart,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (merchant.phone?.isEmpty ?? true) {
+      return Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: Container(
             color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextButton(
-                onPressed: () => _sendOrderMessage(context),
-                child: Text("PESAN"),
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.all(12.0),
-                  textStyle: TextStyle(fontSize: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                 ),
-              ),
+                CheckoutOrderButton(
+                  merchant: merchant,
+                  cart: cart,
+                ),
+              ],
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class CheckoutOrderButton extends StatelessWidget {
+  final Merchant merchant;
+  final List<CartItem> cart;
+
+  CheckoutOrderButton({
+    required this.merchant,
+    required this.cart,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+      child: TextButton(
+        onPressed: () => _sendOrderMessage(context),
+        child: Text("PESAN"),
+        style: TextButton.styleFrom(
+          primary: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          padding: const EdgeInsets.all(12.0),
+          textStyle: TextStyle(fontSize: 16.0),
+        ),
+      ),
     );
   }
 
@@ -235,15 +288,13 @@ class CheckoutOrderButton extends StatelessWidget {
     );
   }
 
-  void _launchWhatsApp(
-    BuildContext context,
-    String phone,
-    String message,
-  ) async {
+  void _launchWhatsApp(BuildContext context,
+      String phone,
+      String message,) async {
     String? encodeQueryParameters(Map<String, String> params) {
       return params.entries
           .map((e) =>
-              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
           .join('&');
     }
 
@@ -280,6 +331,6 @@ class CheckoutOrderButton extends StatelessWidget {
       message += "${item.productQty} × ${item.productName}\n";
     }
     message += "Terima kasih.";
-    _launchWhatsApp(context, "6285624890099", message);
+    _launchWhatsApp(context, merchant.phone!, message);
   }
 }
