@@ -252,7 +252,7 @@ class MerchantInfo extends StatelessWidget {
               Icon(Icons.location_on_outlined),
               SizedBox(width: 8.0),
               Text(
-                '${merchant.lat}, ${merchant.lon}',
+                '${merchant.address}',
                 style: Theme.of(context).textTheme.bodyText2,
               ),
             ],
@@ -260,7 +260,7 @@ class MerchantInfo extends StatelessWidget {
           SizedBox(height: 12.0),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               Icon(Icons.watch_later_outlined),
               SizedBox(width: 8.0),
               Column(

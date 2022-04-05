@@ -3,6 +3,7 @@ class Merchant {
   String name;
   double lat;
   double lon;
+  String address;
   String? phone;
   String image;
 
@@ -11,6 +12,7 @@ class Merchant {
     required this.name,
     required this.lat,
     required this.lon,
+    required this.address,
     this.phone,
     required this.image,
   });
@@ -21,6 +23,7 @@ class Merchant {
       name: json['name'],
       lat: json['lat'],
       lon: json['lon'],
+      address: json['address'],
       phone: json['phone'],
       image: json['image'],
     );
@@ -32,6 +35,7 @@ class Merchant {
     map['name'] = this.name;
     map['lat'] = this.lat;
     map['lon'] = this.lon;
+    map['address'] = this.address;
     map['phone'] = this.phone;
     map['image'] = this.image;
     return map;
