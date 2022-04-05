@@ -257,47 +257,47 @@ class MerchantInfo extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 12.0),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Icon(Icons.watch_later_outlined),
-              SizedBox(width: 8.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MerchantScheduleRow(
-                    day: "Sunday",
-                    hours: "09:00 - 17:00",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Monday",
-                    hours: "09:00 - 17:00",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Tuesday",
-                    hours: "09:00 - 17:00",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Wednesday",
-                    hours: "09:00 - 17:00",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Thursday",
-                    hours: "09:00 - 17:00",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Friday",
-                    hours: "Closed",
-                  ),
-                  MerchantScheduleRow(
-                    day: "Saturday",
-                    hours: "09:00 - 17:00",
-                  ),
-                ],
-              ),
-            ],
-          ),
+          // SizedBox(height: 12.0),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: <Widget>[
+          //     Icon(Icons.watch_later_outlined),
+          //     SizedBox(width: 8.0),
+          //     Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         MerchantScheduleRow(
+          //           day: "Sunday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Monday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Tuesday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Wednesday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Thursday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Friday",
+          //           hours: "Closed",
+          //         ),
+          //         MerchantScheduleRow(
+          //           day: "Saturday",
+          //           hours: "09:00 - 17:00",
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
