@@ -33,10 +33,7 @@ class ProductCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Image.asset(
-            product.image ?? "assets/images/no_image.png",
-            height: 64,
-          ),
+          buildProductImage(product.image),
           SizedBox(
             width: 8,
           ),
@@ -89,6 +86,21 @@ class ProductCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildProductImage(String? image) {
+    if (image == null) {
+      return Image.asset(
+        "assets/images/no_image.png",
+        height: 64,
+      );
+    }
+
+    return FadeInImage.assetNetwork(
+      placeholder: "assets/images/no_image.png",
+      image: image,
+      height: 64,
     );
   }
 }
