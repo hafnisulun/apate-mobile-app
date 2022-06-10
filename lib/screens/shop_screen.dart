@@ -55,7 +55,6 @@ class ShopView extends StatelessWidget {
   }
 
   void _onLoading() async {
-    await Future.delayed(Duration(milliseconds: 1000));
     _refreshController.loadNoData();
   }
 
